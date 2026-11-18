@@ -1,0 +1,165 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Data Pendidikan | Dashboard Analisis</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+
+        <aside class="sidebar">
+
+            <div class="sidebar-brand">
+                <h2>Data Pendidikan</h2>
+                <p>Education Analytics</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <p class="menu-label">MENU UTAMA</p>
+
+                <a href="{% url 'home' %}" class="menu-item active">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'dataset' %}" class="menu-item">
+                    Eksplorasi Data
+                </a>
+
+                <a href="#" class="menu-item">
+                    Analisis Pendidikan
+                </a>
+
+                <p class="menu-label">MACHINE LEARNING</p>
+
+                <a href="#" class="menu-item">
+                    Prediksi Pendidikan
+                </a>
+
+                <a href="#" class="menu-item">
+                    Riwayat Prediksi
+                </a>
+
+                <p class="menu-label">LAINNYA</p>
+
+                <a href="#" class="menu-item">
+                    Informasi Model
+                </a>
+
+                <a href="#" class="menu-item">
+                    Tentang Sistem
+                </a>
+            </nav>
+
+        </aside>
+
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Ringkasan Data Pendidikan Kabupaten Cirebon</p>
+                </div>
+            </header>
+
+            <section class="welcome-section">
+                <h2>Selamat Datang di Data Pendidikan</h2>
+
+                <p>
+                    Sistem analisis dan prediksi angka mengulang,
+                    putus sekolah, dan lulusan tingkat SMA, MA, dan SMK.
+                </p>
+            </section>
+
+            <section class="statistics-section">
+
+                <div class="section-heading">
+                    <h2>Ringkasan Data</h2>
+                    <p>Gambaran umum dataset pendidikan</p>
+                </div>
+
+                <div class="statistics-grid">
+
+                    <div class="stat-card">
+                        <h3>Total Data</h3>
+                        <p class="stat-value">{{ statistics.total_data }}</p>
+                        <span>Baris data</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Jumlah Kecamatan</h3>
+                        <p class="stat-value">{{ statistics.total_kecamatan }}</p>
+                        <span>Kecamatan</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Periode Data</h3>
+                        <p class="stat-value">{{ statistics.tahun_awal }}–{{ statistics.tahun_akhir }}</p>
+                        <span>Tahun pengamatan</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3>Jenjang Pendidikan</h3>
+                        <p class="stat-value">{{ statistics.total_jenjang }}</p>
+                        <span>SMA, MA, dan SMK</span>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <section class="charts-section">
+
+                <div class="section-heading">
+                    <h2>Visualisasi Data Pendidikan</h2>
+                    <p>Perbandingan indikator pendidikan berdasarkan jenjang sekolah</p>
+                </div>
+
+                <div class="charts-grid">
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Angka Mengulang</h3>
+                            <span>SMA, MA, dan SMK</span>
+                        </div>
+                        <div class="chart-canvas"><canvas id="chartMengulang"></canvas></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Angka Putus Sekolah</h3>
+                            <span>SMA, MA, dan SMK</span>
+                        </div>
+                        <div class="chart-canvas"><canvas id="chartPutusSekolah"></canvas></div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3>Angka Lulusan</h3>
+                            <span>SMA, MA, dan SMK</span>
+                        </div>
+                        <div class="chart-canvas"><canvas id="chartLulusan"></canvas></div>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+{{ chart_data|json_script:"chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/charts.js' %}"></script>
+
+</body>
+</html>
+
+

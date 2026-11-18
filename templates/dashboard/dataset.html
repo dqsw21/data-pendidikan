@@ -1,0 +1,122 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dataset Explorer | Data Pendidikan</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2>Data Pendidikan</h2>
+            </div>
+            <nav class="sidebar-menu">
+                <span class="menu-label">MENU UTAMA</span>
+                <a href="{% url 'home' %}" class="menu-item">Dashboard</a>
+                <a href="{% url 'dataset' %}" class="menu-item active">Dataset Explorer</a>
+                <span class="menu-label">ANALISIS</span>
+                <a href="#" class="menu-item">Prediksi</a>
+                <a href="#" class="menu-item">Informasi Model</a>
+                <a href="#" class="menu-item">Tentang Sistem</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2>Dataset Explorer</h2>
+            </header>
+
+            <section class="welcome-section">
+                <h1>Eksplorasi Data Pendidikan</h1>
+                <p>Telusuri dan amati data angka mengulang, putus sekolah, dan lulusan berdasarkan kecamatan dan tahun.</p>
+            </section>
+
+            <section class="dataset-section">
+                <div class="dataset-toolbar">
+                    <form method="get" class="dataset-filter">
+                        <input
+                            type="text"
+                            name="q"
+                            value="{{ search_query }}"
+                            placeholder="Cari nama kecamatan..."
+                        >
+
+                        <select name="tahun">
+                            <option value="">Semua Tahun</option>
+                            {% for year in years %}
+                                <option value="{{ year }}" {% if selected_year == year|stringformat:"s" %}selected{% endif %}>
+                                    {{ year }}
+                                </option>
+                            {% endfor %}
+                        </select>
+
+                        <button type="submit">Terapkan</button>
+                        <a href="{% url 'dataset' %}">Reset</a>
+                    </form>
+                    <p class="dataset-count">Menampilkan {{ page_obj.start_index|default:0 }}–{{ page_obj.end_index|default:0 }} dari {{ total_filtered }} data</p>
+                </div>
+
+                <div class="dataset-table-wrapper">
+                    <table class="dataset-table">
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Kecamatan</th>
+                                <th>Tahun</th>
+                                <th>Mengulang SMA</th>
+                                <th>Putus Sekolah SMA</th>
+                                <th>Lulusan SMA</th>
+                                <th>Mengulang MA</th>
+                                <th>Putus Sekolah MA</th>
+                                <th>Lulusan MA</th>
+                                <th>Mengulang SMK</th>
+                                <th>Putus Sekolah SMK</th>
+                                <th>Lulusan SMK</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in page_obj %}
+                                <tr>
+                                    <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                                    <td class="district-name">{{ item.bps_nama_kecamatan }}</td>
+                                    <td>{{ item.tahun }}</td>
+                                    <td>{{ item.angka_mengulang_sma|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_putus_sekolah_sma|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_lulusan_sma|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_mengulang_ma|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_putus_sekolah_ma|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_lulusan_ma|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_mengulang_smk|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_putus_sekolah_smk|floatformat:2 }}%</td>
+                                    <td>{{ item.angka_lulusan_smk|floatformat:2 }}%</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="12" class="empty-data">Data tidak ditemukan.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if page_obj.paginator.num_pages > 1 %}
+                    <div class="dataset-pagination">
+                        {% if page_obj.has_previous %}
+                            <a href="?q={{ search_query|urlencode }}&tahun={{ selected_year }}&page={{ page_obj.previous_page_number }}">Sebelumnya</a>
+                        {% endif %}
+
+                        <span>Halaman {{ page_obj.number }} dari {{ page_obj.paginator.num_pages }}</span>
+
+                        {% if page_obj.has_next %}
+                            <a href="?q={{ search_query|urlencode }}&tahun={{ selected_year }}&page={{ page_obj.next_page_number }}">Selanjutnya</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>
