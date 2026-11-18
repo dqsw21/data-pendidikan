@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Data Pendidikan{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2>Data Pendidikan</h2>
+                <p>Education Analytics</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <p class="menu-label">MENU UTAMA</p>
+
+                <a href="{% url 'home' %}" class="menu-item {% if active_page == 'home' %}active{% endif %}">
+                    Dashboard
+                </a>
+
+                <a href="{% url 'dataset' %}" class="menu-item {% if active_page == 'dataset' %}active{% endif %}">
+                    Eksplorasi Data
+                </a>
+
+                <a href="#" class="menu-item">
+                    Analisis Pendidikan
+                </a>
+
+                <p class="menu-label">MACHINE LEARNING</p>
+
+                <a href="#" class="menu-item">
+                    Prediksi Pendidikan
+                </a>
+
+                <a href="#" class="menu-item">
+                    Riwayat Prediksi
+                </a>
+
+                <p class="menu-label">LAINNYA</p>
+
+                <a href="#" class="menu-item">
+                    Informasi Model
+                </a>
+
+                <a href="#" class="menu-item">
+                    Tentang Sistem
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

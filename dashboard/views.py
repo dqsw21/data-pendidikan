@@ -17,6 +17,7 @@ def home(request):
     context = {
         "statistics": statistics,
         "chart_data": get_chart_data(),
+        "active_page": "home",
     }
 
     return render(request, "dashboard/home.html", context)
@@ -69,6 +70,7 @@ def dataset_explorer(request):
         "selected_year": selected_year,
         "years": years,
         "total_filtered": len(table_data),
+        "active_page": "dataset",
     }
 
     return render(request, "dashboard/dataset.html", context)
