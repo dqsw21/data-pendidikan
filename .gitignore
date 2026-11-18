@@ -1,0 +1,28 @@
+# Lingkungan virtual Python
+.venv/
+venv/
+env/
+
+# File Python sementara 
+__pycache__/
+*.py[cod]
+*.pyo
+
+# File konfigurasi rahasia
+.env
+.env.*
+
+# Database lokal
+*.sqlite3
+db.sqlite3
+
+# File sistem dan editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# File pengujian dan cache
+.pytest_cache/
+.coverage
+htmlcov/
