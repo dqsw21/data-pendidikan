@@ -1,0 +1,60 @@
+.sidebar {
+    animation: sidebarEntrance .65s cubic-bezier(.22,.61,.36,1) both;
+}
+
+.main-content > * {
+    animation: contentEntrance .65s cubic-bezier(.22,.61,.36,1) both;
+}
+
+.main-content > *:nth-child(1) { animation-delay: .12s; }
+.main-content > *:nth-child(2) { animation-delay: .22s; }
+.main-content > *:nth-child(3) { animation-delay: .32s; }
+.main-content > *:nth-child(4) { animation-delay: .42s; }
+
+.statistics-grid .stat-card {
+    animation: cardEntrance .6s ease both;
+}
+
+.statistics-grid .stat-card:nth-child(1) { animation-delay: .30s; }
+.statistics-grid .stat-card:nth-child(2) { animation-delay: .40s; }
+.statistics-grid .stat-card:nth-child(3) { animation-delay: .50s; }
+.statistics-grid .stat-card:nth-child(4) { animation-delay: .60s; }
+
+.chart-card {
+    animation: cardEntrance .7s ease both;
+}
+
+.chart-card:nth-child(1) { animation-delay: .45s; }
+.chart-card:nth-child(2) { animation-delay: .55s; }
+.chart-card:nth-child(3) { animation-delay: .65s; }
+
+.stat-card, .chart-card {
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.stat-card:hover, .chart-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(37, 99, 235, .09);
+}
+
+@keyframes sidebarEntrance {
+    from { opacity: 0; transform: translateX(-25px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes contentEntrance {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardEntrance {
+    from { opacity: 0; transform: translateY(20px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}

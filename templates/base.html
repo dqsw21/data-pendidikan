@@ -5,53 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Data Pendidikan{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=4">
+    <link rel="stylesheet" href="{% static 'css/content-motion.css' %}">
     {% block extra_css %}{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <h2>Data Pendidikan</h2>
-                <p>Education Analytics</p>
-            </div>
+        <header class="top-navigation">
+            <a href="{% url 'home' %}" class="navbar-brand">
+                <div class="navbar-logo">D</div>
+                <div class="navbar-brand-text">
+                    <strong>Data Pendidikan</strong>
+                    <span>Education Analytics</span>
+                </div>
+            </a>
 
-            <nav class="sidebar-menu">
-                <p class="menu-label">MENU UTAMA</p>
-
-                <a href="{% url 'home' %}" class="menu-item {% if active_page == 'home' %}active{% endif %}">
+            <nav class="navbar-menu">
+                <a href="{% url 'home' %}" class="nav-item {% if active_page == 'home' %}active{% endif %}">
                     Dashboard
                 </a>
 
-                <a href="{% url 'dataset' %}" class="menu-item {% if active_page == 'dataset' %}active{% endif %}">
+                <a href="{% url 'dataset' %}" class="nav-item {% if active_page == 'dataset' %}active{% endif %}">
                     Eksplorasi Data
                 </a>
 
-                <a href="#" class="menu-item">
+                <a href="{% url 'analysis' %}" class="nav-item {% if active_page == 'analysis' %}active{% endif %}">
                     Analisis Pendidikan
                 </a>
 
-                <p class="menu-label">MACHINE LEARNING</p>
+                <a href="{% url 'prediction' %}" class="nav-item {% if active_page == 'prediction' %}active{% endif %}">Prediksi</a>
 
-                <a href="#" class="menu-item">
-                    Prediksi Pendidikan
-                </a>
-
-                <a href="#" class="menu-item">
-                    Riwayat Prediksi
-                </a>
-
-                <p class="menu-label">LAINNYA</p>
-
-                <a href="#" class="menu-item">
-                    Informasi Model
-                </a>
-
-                <a href="#" class="menu-item">
-                    Tentang Sistem
-                </a>
+                <details class="nav-dropdown {% if active_page == 'model_info' or active_page == 'about' %}dropdown-active{% endif %}">
+                    <summary>Lainnya <span class="dropdown-arrow">⌄</span></summary>
+                    <div class="dropdown-content">
+                        <a href="{% url 'model_info' %}" class="{% if active_page == 'model_info' %}active{% endif %}">Informasi Sistem Prediksi</a>
+                        <a href="{% url 'about' %}" class="{% if active_page == 'about' %}active{% endif %}">Tentang Website</a>
+                    </div>
+                </details>
             </nav>
-        </aside>
+        </header>
 
         <main class="main-content">
             {% block content %}{% endblock %}
@@ -59,5 +52,6 @@
     </div>
 
     {% block extra_js %}{% endblock %}
+    <script src="{% static 'js/content-motion.js' %}"></script>
 </body>
 </html>

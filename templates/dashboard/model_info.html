@@ -1,0 +1,404 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Informasi Sistem Prediksi</h1>
+    <p>Dokumentasi metode, proses pengembangan, perhitungan, dan pengujian Predictive Analytics Engine.</p>
+</div>
+
+<div class="card">
+    <h2>1. Gambaran Umum Sistem</h2>
+    <p>
+        Predictive Analytics Engine (PAE) merupakan mesin prediksi yang dirancang
+        untuk memperkirakan perkembangan indikator pendidikan pada tingkat kecamatan
+        di Kabupaten Cirebon. Sistem menggunakan data historis sebagai dasar
+        perhitungan untuk menghasilkan estimasi nilai indikator pada tahun mendatang.
+    </p>
+    <p>
+        PAE menggunakan pendekatan matematis berbasis perubahan nilai historis,
+        asumsi pertumbuhan moderat, dan interaksi antarindikator tertentu.
+        Sistem dirancang menggunakan satu mesin prediksi utama yang diterapkan
+        kepada seluruh kecamatan dan indikator, bukan menggunakan mesin terpisah
+        untuk setiap kecamatan.
+    </p>
+</div>
+
+<div class="card">
+    <h2>2. Tujuan Mesin Prediksi</h2>
+    <ul>
+        <li>Memperkirakan perkembangan indikator pendidikan pada tahun mendatang.</li>
+        <li>Membantu memahami kecenderungan perubahan indikator setiap kecamatan.</li>
+        <li>Menyediakan estimasi angka mengulang, putus sekolah, dan lulusan.</li>
+        <li>Menampilkan hasil perhitungan dalam bentuk grafik yang mudah dibaca.</li>
+        <li>Menjadi alat pendukung analisis, bukan pengganti data aktual atau keputusan kebijakan.</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>3. Dataset dan Ruang Lingkup</h2>
+    <p>Mesin prediksi menggunakan dataset pendidikan dengan cakupan:</p>
+    <ul>
+        <li>Wilayah: Kabupaten Cirebon.</li>
+        <li>Jumlah wilayah analisis: 40 kecamatan.</li>
+        <li>Data historis yang digunakan dalam pengembangan: tahun 2024 dan 2025.</li>
+        <li>Jumlah indikator: 9 indikator pendidikan.</li>
+        <li>Jenjang pendidikan: SMA, MA, dan SMK.</li>
+        <li>Tahun prediksi yang tersedia: 2026, 2027, dan 2028.</li>
+    </ul>
+
+    <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Jenjang</th>
+                    <th>Indikator</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>SMA</td><td>Angka Mengulang</td></tr>
+                <tr><td>SMA</td><td>Angka Putus Sekolah</td></tr>
+                <tr><td>SMA</td><td>Angka Lulusan</td></tr>
+                <tr><td>MA</td><td>Angka Mengulang</td></tr>
+                <tr><td>MA</td><td>Angka Putus Sekolah</td></tr>
+                <tr><td>MA</td><td>Angka Lulusan</td></tr>
+                <tr><td>SMK</td><td>Angka Mengulang</td></tr>
+                <tr><td>SMK</td><td>Angka Putus Sekolah</td></tr>
+                <tr><td>SMK</td><td>Angka Lulusan</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card">
+    <h2>4. Persiapan dan Pengolahan Data</h2>
+    <p>
+        Sebelum perhitungan dilakukan, dataset dibaca oleh sistem melalui
+        komponen pengolahan data. Data kemudian digunakan untuk menentukan
+        kecamatan, tahun historis, serta nilai setiap indikator yang akan
+        diproses oleh mesin prediksi.
+    </p>
+    <ol>
+        <li>Dataset pendidikan dimuat ke dalam sistem.</li>
+        <li>Data dikelompokkan berdasarkan nama kecamatan.</li>
+        <li>Data historis diurutkan berdasarkan tahun.</li>
+        <li>Nilai indikator yang tersedia diambil untuk proses perhitungan.</li>
+        <li>Sistem menentukan nilai historis terakhir dan perubahan antarperiode.</li>
+        <li>Data tersebut digunakan sebagai dasar proyeksi.</li>
+    </ol>
+    <p>
+        Perhitungan indikator dilakukan menggunakan data yang tersedia
+        untuk indikator tersebut. Jumlah data historis yang digunakan
+        juga dicatat sebagai informasi pendukung hasil prediksi.
+    </p>
+</div>
+
+<div class="card">
+    <h2>5. Metode Local Trend</h2>
+    <p>
+        Local Trend merupakan pendekatan yang menghitung perubahan indikator
+        berdasarkan dua nilai historis terakhir pada kecamatan yang sedang
+        dianalisis. Perubahan tersebut digunakan sebagai dasar untuk
+        memperkirakan nilai tahun berikutnya.
+    </p>
+
+    <p><strong>Perubahan tahunan:</strong></p>
+    <div style="overflow-x:auto;">
+        <p style="text-align:center;font-size:1.05rem;">
+            Δ = (Nilai Terakhir − Nilai Sebelumnya) / Jarak Tahun
+        </p>
+    </div>
+
+    <p><strong>Proyeksi dasar:</strong></p>
+    <div style="overflow-x:auto;">
+        <p style="text-align:center;font-size:1.05rem;">
+            Nilai Prediksi = Nilai Sebelumnya + Δ
+        </p>
+    </div>
+
+    <p>
+        Apabila tersedia setidaknya dua nilai historis, sistem menghitung
+        perubahan tahunan. Jika hanya tersedia satu nilai, perubahan
+        historis dianggap nol sehingga proyeksi dasar tidak memiliki
+        perubahan tren.
+    </p>
+    <p>
+        Pendekatan ini disebut local karena perubahan dihitung dari riwayat
+        kecamatan dan indikator yang sedang diproses, bukan menggunakan
+        satu rata-rata perubahan yang sama untuk seluruh wilayah.
+    </p>
+</div>
+
+<div class="card">
+    <h2>6. Student Growth Assumption</h2>
+    <p>
+        Pada indikator lulusan, sistem menambahkan asumsi pertumbuhan moderat
+        sebesar 0,5% per tahun terhadap nilai prediksi lulusan yang positif.
+        Asumsi ini merupakan parameter matematis sistem, bukan data
+        pertumbuhan siswa yang diamati secara langsung.
+    </p>
+
+    <p><strong>Parameter pertumbuhan:</strong></p>
+    <p style="text-align:center;font-size:1.05rem;">
+        Growth Rate = 0,005
+    </p>
+
+    <p><strong>Komponen pertumbuhan:</strong></p>
+    <p style="text-align:center;font-size:1.05rem;">
+        Pertumbuhan = max(0, Nilai Prediksi Lulusan) × 0,005
+    </p>
+
+    <p>
+        Komponen ini hanya diterapkan pada indikator kategori lulusan.
+        Tujuannya adalah memasukkan asumsi pertumbuhan moderat ke dalam
+        proyeksi, bukan menyatakan bahwa jumlah lulusan pasti meningkat
+        sebesar 0,5% pada kondisi nyata.
+    </p>
+</div>
+
+<div class="card">
+    <h2>7. Dynamic Indicator Interaction</h2>
+    <p>
+        Pada indikator lulusan, mesin prediksi juga memperhitungkan perubahan
+        indikator mengulang sekolah dan putus sekolah pada jenjang yang sama.
+        Interaksi tersebut digunakan sebagai komponen koreksi terhadap
+        proyeksi lulusan.
+    </p>
+
+    <ul>
+        <li>Perubahan angka mengulang digunakan sebagai salah satu faktor interaksi.</li>
+        <li>Perubahan angka putus sekolah digunakan sebagai faktor interaksi.</li>
+        <li>Interaksi diterapkan pada indikator lulusan SMA, MA, dan SMK sesuai jenjangnya.</li>
+        <li>Perubahan indikator terkait diproyeksikan menggunakan tren historisnya.</li>
+    </ul>
+
+    <p><strong>Komponen interaksi:</strong></p>
+    <p style="text-align:center;font-size:1.05rem;">
+        Interaksi = −0,25 × Perubahan Indikator Terkait
+    </p>
+
+    <p>
+        Komponen interaksi kedua indikator terkait dijumlahkan dan digunakan
+        sebagai penyesuaian perubahan angka lulusan. Dengan demikian,
+        perubahan indikator mengulang atau putus sekolah dapat memengaruhi
+        arah perhitungan estimasi lulusan.
+    </p>
+
+    <p>
+        Koefisien 0,25 merupakan parameter yang ditetapkan pada implementasi
+        mesin prediksi. Koefisien tersebut bukan hasil pembuktian hubungan
+        kausal maupun hasil optimasi statistik.
+    </p>
+</div>
+
+<div class="card">
+    <h2>8. Rumus Perhitungan Indikator Lulusan</h2>
+    <p>
+        Untuk indikator lulusan, perubahan tahunan menggabungkan tren historis,
+        asumsi pertumbuhan moderat, dan interaksi indikator terkait.
+    </p>
+
+    <p><strong>Perubahan tahunan lulusan:</strong></p>
+    <p style="text-align:center;font-size:1.05rem;">
+        Δ Lulusan = Tren Historis + Pertumbuhan + Interaksi
+    </p>
+
+    <p><strong>Nilai proyeksi:</strong></p>
+    <p style="text-align:center;font-size:1.05rem;">
+        Lulusan Prediksi = Lulusan Sebelumnya + Δ Lulusan
+    </p>
+
+    <p>
+        Hasil perhitungan diterapkan secara bertahap untuk setiap tahun
+        proyeksi. Nilai prediksi tahun sebelumnya menjadi nilai dasar
+        untuk iterasi berikutnya, sedangkan komponen tren historis
+        tetap berasal dari perubahan data aktual terakhir yang tersedia.
+    </p>
+</div>
+
+<div class="card">
+    <h2>9. Batas Nilai Indikator</h2>
+    <p>
+        Sistem menerapkan batas nilai untuk menjaga hasil perhitungan
+        tetap berada pada rentang yang ditentukan sesuai kategori indikator.
+    </p>
+
+    <div style="overflow-x:auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Kategori</th>
+                    <th>Batas Nilai</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Angka Mengulang</td>
+                    <td>0–100</td>
+                </tr>
+                <tr>
+                    <td>Angka Putus Sekolah</td>
+                    <td>0–100</td>
+                </tr>
+                <tr>
+                    <td>Angka Lulusan</td>
+                    <td>Minimal 0, tanpa batas maksimum 100</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p>
+        Nilai indikator mengulang dan putus sekolah dibatasi minimum 0
+        dan maksimum 100. Sementara itu, indikator lulusan hanya
+        dibatasi agar tidak bernilai negatif. Oleh karena itu,
+        nilai lulusan dapat melebihi 100 sesuai hasil perhitungan.
+    </p>
+</div>
+
+<div class="card">
+    <h2>10. Tahapan Prediksi 2026–2028</h2>
+    <ol>
+        <li>Data aktual historis digunakan sebagai titik awal.</li>
+        <li>Mesin menghitung tren historis berdasarkan dua nilai terakhir.</li>
+        <li>Nilai tahun 2026 dihitung menggunakan perubahan tahunan dan komponen tambahan sesuai kategori indikator.</li>
+        <li>Nilai hasil 2026 menjadi dasar nilai awal iterasi 2027.</li>
+        <li>Nilai hasil 2027 menjadi dasar nilai awal iterasi 2028.</li>
+        <li>Perhitungan dilakukan hingga mencapai tahun yang diminta pengguna.</li>
+        <li>Hasil prediksi seluruh indikator disusun dan disiapkan untuk visualisasi.</li>
+    </ol>
+
+    <p><strong>Gambaran proses:</strong></p>
+    <div style="overflow-x:auto;">
+        <p style="text-align:center;">
+            Data Aktual → 2026 → 2027 → 2028
+        </p>
+    </div>
+    <p>
+        Prediksi untuk tahun yang lebih jauh merupakan hasil iterasi
+        beberapa langkah, sehingga perubahan nilai dapat terakumulasi
+        sepanjang periode proyeksi.
+    </p>
+</div>
+
+<div class="card">
+    <h2>11. Pembentukan Hasil dan Visualisasi</h2>
+    <p>
+        Setelah proses perhitungan selesai, sistem menyusun informasi
+        prediksi untuk setiap indikator. Informasi tersebut mencakup
+        nilai historis terakhir, nilai prediksi, selisih, arah perubahan,
+        metode yang digunakan, tren historis, jumlah data historis,
+        serta skor stabilitas.
+    </p>
+    <p>
+        Hasil aktual dan hasil prediksi disusun berdasarkan tahun.
+        Data tersebut kemudian dikirim ke halaman Prediksi untuk
+        ditampilkan melalui grafik.
+    </p>
+    <ul>
+        <li>Grafik Angka Mengulang.</li>
+        <li>Grafik Angka Putus Sekolah.</li>
+        <li>Grafik Angka Lulusan.</li>
+    </ul>
+    <p>
+        Grafik digunakan untuk membantu pengguna membandingkan nilai aktual
+        dengan hasil estimasi serta melihat kecenderungan perubahan indikator.
+    </p>
+</div>
+
+<div class="card">
+    <h2>12. Stability Score</h2>
+    <p>
+        Stability Score merupakan ukuran kestabilan nilai historis
+        suatu indikator. Nilai dihitung dengan mempertimbangkan
+        simpangan baku terhadap skala rata-rata nilai historis.
+    </p>
+
+    <p><strong>Rumus implementasi:</strong></p>
+    <p style="text-align:center;font-size:1.05rem;">
+        Score = 100 / (1 + (Std / Scale × 10))
+    </p>
+
+    <p>
+        Scale menggunakan nilai absolut rata-rata historis. Jika skala
+        mendekati nol, sistem menggunakan alternatif skala berdasarkan
+        nilai absolut historis. Jika seluruh nilai mendekati nol,
+        skor stabilitas ditetapkan 100.
+    </p>
+
+    <p>
+        Nilai skor dibatasi pada 0–100. Skor yang lebih tinggi
+        menunjukkan nilai historis relatif lebih stabil menurut rumus
+        yang digunakan.
+    </p>
+
+    <p>
+        Stability Score bukan probabilitas keberhasilan prediksi,
+        bukan akurasi model, dan bukan jaminan bahwa nilai masa
+        depan akan sesuai dengan estimasi.
+    </p>
+</div>
+
+<div class="card">
+    <h2>13. Pengujian dan Validasi Teknis</h2>
+    <p>
+        Pengujian teknis dilakukan untuk memastikan mesin prediksi
+        dapat menghasilkan data yang terstruktur, numerik, dan dapat
+        digunakan oleh halaman visualisasi.
+    </p>
+
+    <ul>
+        <li>Pemeriksaan sintaks Python pada mesin prediksi.</li>
+        <li>Pemeriksaan proses perhitungan untuk seluruh kecamatan.</li>
+        <li>Pemeriksaan 9 indikator pada setiap kecamatan.</li>
+        <li>Pemeriksaan hasil prediksi tahun 2026, 2027, dan 2028.</li>
+        <li>Pemeriksaan nilai agar tidak menghasilkan NaN atau Infinity.</li>
+        <li>Pemeriksaan batas nilai pada indikator mengulang dan putus sekolah.</li>
+        <li>Pemeriksaan struktur hasil prediksi untuk kebutuhan dashboard.</li>
+    </ul>
+
+    <p>
+        Pada validasi hasil yang telah dilakukan sebelumnya,
+        40 kecamatan × 9 indikator × 3 tahun menghasilkan
+        1.080 nilai prediksi yang diperiksa. Pemeriksaan tersebut
+        menemukan 0 kesalahan nilai non-finite pada hasil yang diuji.
+    </p>
+
+    <p>
+        Pemeriksaan tersebut merupakan validasi teknis terhadap
+        proses dan hasil perhitungan. Validasi ini belum dapat
+        dianggap sebagai pengukuran akurasi prediksi terhadap
+        kondisi pendidikan aktual pada tahun 2026–2028.
+    </p>
+</div>
+
+<div class="card">
+    <h2>14. Keterbatasan Sistem</h2>
+    <ul>
+        <li>Data historis yang tersedia masih terbatas pada periode yang digunakan.</li>
+        <li>Tren dihitung dari perubahan dua nilai historis terakhir.</li>
+        <li>Asumsi pertumbuhan 0,5% merupakan parameter sistem, bukan pengukuran pertumbuhan aktual.</li>
+        <li>Koefisien interaksi 0,25 belum membuktikan hubungan sebab-akibat.</li>
+        <li>Perhitungan belum mencakup seluruh faktor sosial, ekonomi, demografi, kebijakan, dan kondisi sekolah.</li>
+        <li>Perubahan kebijakan atau kondisi eksternal dapat menyebabkan hasil aktual berbeda dari prediksi.</li>
+        <li>Prediksi jangka lebih jauh berpotensi mengalami akumulasi perubahan perhitungan.</li>
+        <li>Akurasi model terhadap data masa depan belum dapat ditentukan sebelum hasil prediksi dibandingkan dengan data aktual.</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>15. Interpretasi dan Penggunaan</h2>
+    <p>
+        Hasil PAE sebaiknya digunakan sebagai informasi pendukung
+        dalam memahami kecenderungan indikator pendidikan.
+        Pengguna perlu mempertimbangkan konteks wilayah,
+        perubahan kebijakan, dan kondisi lapangan sebelum
+        menggunakan hasil untuk pengambilan keputusan.
+    </p>
+    <p>
+        Ketika data aktual tahun berikutnya tersedia, hasil prediksi
+        dapat dibandingkan dengan nilai aktual sebagai bahan evaluasi
+        dan pengembangan metode prediksi selanjutnya.
+    </p>
+</div>
+
+{% endblock %}

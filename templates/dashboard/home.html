@@ -52,6 +52,8 @@
     </div>
 </section>
 
+
+
 <section class="charts-section">
     <div class="section-heading">
         <h2>Visualisasi Data Pendidikan</h2>
@@ -59,36 +61,69 @@
     </div>
 
     <div class="charts-grid">
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3>Angka Mengulang</h3>
-                <span>SMA, MA, dan SMK</span>
+
+        <div class="chart-group">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Angka Mengulang</h3>
+                    <span>SMA, MA, dan SMK</span>
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="chartMengulang"></canvas>
+                </div>
             </div>
-            <div class="chart-canvas">
-                <canvas id="chartMengulang"></canvas>
+
+            <div class="chart-ai-explanation" id="ai-mengulang">
+                <div class="chart-ai-heading">PENJELASAN AI</div>
+                <div class="chart-ai-loading" hidden>AI sedang menganalisis data...</div>
+                <div class="chart-ai-error" hidden></div>
+                <div class="chart-ai-result" hidden></div>
+                <div class="chart-ai-meta"></div>
             </div>
         </div>
 
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3>Angka Putus Sekolah</h3>
-                <span>SMA, MA, dan SMK</span>
+        <div class="chart-group">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Angka Putus Sekolah</h3>
+                    <span>SMA, MA, dan SMK</span>
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="chartPutusSekolah"></canvas>
+                </div>
             </div>
-            <div class="chart-canvas">
-                <canvas id="chartPutusSekolah"></canvas>
+
+            <div class="chart-ai-explanation" id="ai-putus-sekolah">
+                <div class="chart-ai-heading">PENJELASAN AI</div>
+                <div class="chart-ai-loading" hidden>AI sedang menganalisis data...</div>
+                <div class="chart-ai-error" hidden></div>
+                <div class="chart-ai-result" hidden></div>
+                <div class="chart-ai-meta"></div>
             </div>
         </div>
 
-        <div class="chart-card">
-            <div class="chart-header">
-                <h3>Angka Lulusan</h3>
-                <span>SMA, MA, dan SMK</span>
+        <div class="chart-group">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3>Angka Lulusan</h3>
+                    <span>SMA, MA, dan SMK</span>
+                </div>
+                <div class="chart-canvas">
+                    <canvas id="chartLulusan"></canvas>
+                </div>
             </div>
-            <div class="chart-canvas">
-                <canvas id="chartLulusan"></canvas>
+
+            <div class="chart-ai-explanation" id="ai-lulusan">
+                <div class="chart-ai-heading">PENJELASAN AI</div>
+                <div class="chart-ai-loading" hidden>AI sedang menganalisis data...</div>
+                <div class="chart-ai-error" hidden></div>
+                <div class="chart-ai-result" hidden></div>
+                <div class="chart-ai-meta"></div>
             </div>
         </div>
+
     </div>
+
 </section>
 {% endblock %}
 
@@ -96,4 +131,5 @@
 {{ chart_data|json_script:"chart-data" }}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{% static 'js/charts.js' %}"></script>
+<script src="{% static 'js/dashboard_ai.js' %}"></script>
 {% endblock %}

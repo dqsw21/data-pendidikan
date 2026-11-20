@@ -136,3 +136,12 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# AI Dashboard Cache
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "data-pendidikan-ai-dashboard",
+        "TIMEOUT": 86400,
+    }
+}

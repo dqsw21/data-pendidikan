@@ -36,7 +36,9 @@ function createChart(elementId, data, title) {
                     callbacks: {
                         label: function(context) {
                             return context.dataset.label + ": " +
-                                context.parsed.y.toFixed(2) + "%";
+                                context.parsed.y.toLocaleString("id-ID", {
+                                    maximumFractionDigits: 2
+                                }) + "%";
                         }
                     }
                 }
@@ -44,6 +46,13 @@ function createChart(elementId, data, title) {
             scales: {
                 y: {
                     beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return Number(value).toLocaleString("id-ID", {
+                                maximumFractionDigits: 2
+                            }) + "%";
+                        }
+                    },
                     title: {
                         display: true,
                         text: "Persentase (%)"

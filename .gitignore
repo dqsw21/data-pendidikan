@@ -26,3 +26,19 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+# File log
+*.log
+logs/
+
+# Backup lokal
+backups/
+*.bak
+*.backup
+
+# Environment lokal
+*.local
+.env.local
+.env.production
+
+# Hasil build
+staticfiles/

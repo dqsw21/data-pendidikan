@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Analisis Pendidikan{% endblock %}
+
+{% block content %}
+
+<div class="topbar">
+    <h1>Analisis Pendidikan</h1>
+    <p>Ringkasan dan analisis data pendidikan Kabupaten Cirebon</p>
+</div>
+
+{% if analysis.error %}
+<div class="welcome-section">
+    <h2>Data tidak tersedia</h2>
+    <p>{{ analysis.error }}</p>
+</div>
+{% else %}
+
+<div class="welcome-section">
+    <h2>Analisis Tahun {{ analysis.year }}</h2>
+    <p>
+        Analisis mencakup {{ analysis.total_districts }} kecamatan
+        dan {{ analysis.indicator_summary|length }} indikator pendidikan.
+    </p>
+
+    <form method="get" style="margin-top:20px;">
+        <label for="tahun"><strong>Pilih Tahun:</strong></label>
+        <select name="tahun" id="tahun"
+                style="padding:10px;margin-left:8px;border:1px solid #cbd5e1;border-radius:6px;">
+            {% for year in analysis.available_years %}
+            <option value="{{ year }}" {% if year == analysis.year %}selected{% endif %}>
+                {{ year }}
+            </option>
+            {% endfor %}
+        </select>
+        <button type="submit"
+                style="padding:10px 16px;margin-left:8px;border:0;border-radius:6px;background:#2563eb;color:white;cursor:pointer;">
+            Tampilkan
+        </button>
+    </form>
+</div>
+
+<div class="statistics-grid">
+    <div class="stat-card">
+        <h3>Tahun Analisis</h3>
+        <div class="stat-value">{{ analysis.year }}</div>
+        <span>Data yang dianalisis</span>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Kecamatan</h3>
+        <div class="stat-value">{{ analysis.total_districts }}</div>
+        <span>Wilayah penelitian</span>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Indikator</h3>
+        <div class="stat-value">{{ analysis.indicator_summary|length }}</div>
+        <span>Indikator pendidikan</span>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Data</h3>
+        <div class="stat-value">{{ analysis.total_data }}</div>
+        <span>Data wilayah tahun terpilih</span>
+    </div>
+</div>
+
+<div class="charts-section">
+    <div class="section-heading">
+        <h2>Ringkasan 9 Indikator</h2>
+        <p>Statistik setiap indikator berdasarkan data tahun {{ analysis.year }}</p>
+    </div>
+
+    <div class="statistics-grid">
+        {% for item in analysis.indicator_summary %}
+        <div class="stat-card">
+            <h3>{{ item.label }}</h3>
+            <div class="stat-value">{{ item.mean|floatformat:2 }}%</div>
+            <span>Rata-rata</span>
+
+            <div style="margin-top:18px;font-size:13px;color:#64748b;">
+                <p><strong>Median:</strong> {{ item.median|floatformat:2 }}%</p>
+                <p><strong>Nilai tertinggi:</strong> {{ item.highest_value|floatformat:2 }}%</p>
+                <p><strong>Kecamatan:</strong> {{ item.highest_district }}</p>
+                <p style="margin-top:8px;"><strong>Nilai terendah:</strong> {{ item.lowest_value|floatformat:2 }}%</p>
+                <p><strong>Kecamatan:</strong> {{ item.lowest_district }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="charts-section">
+    <div class="section-heading">
+        <h2>Analisis Berdasarkan Jenjang</h2>
+        <p>Pengelompokan indikator berdasarkan SMA, MA, dan SMK</p>
+    </div>
+
+    <div class="charts-grid">
+        {% for level in analysis.level_summary %}
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>{{ level.level }}</h3>
+                <span>{{ level.indicator_count }} indikator</span>
+            </div>
+
+            {% for item in level.indicators %}
+            <div style="padding:12px 0;border-bottom:1px solid #e2e8f0;">
+                <strong>{{ item.label }}</strong>
+                <div style="font-size:13px;color:#64748b;margin-top:5px;">
+                    Rata-rata: {{ item.mean|floatformat:2 }}%
+                </div>
+                <div style="font-size:13px;color:#64748b;">
+                    Maksimum: {{ item.max|floatformat:2 }}%
+                </div>
+                <div style="font-size:13px;color:#64748b;">
+                    Minimum: {{ item.min|floatformat:2 }}%
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="charts-section">
+    <div class="section-heading">
+        <h2>Perbandingan Perubahan Tahunan</h2>
+        <p>Perbandingan {{ analysis.year }} dengan tahun sebelumnya berdasarkan masing-masing indikator</p>
+    </div>
+
+    {% if changes_by_indicator %}
+        {% for group in changes_by_indicator %}
+        <div class="chart-card" style="margin-bottom:20px;">
+            <div class="chart-header">
+                <h3>{{ group.indicator.label }}</h3>
+                <span>{{ group.indicator.level }} · 5 perubahan terbesar</span>
+            </div>
+
+            {% if group.changes %}
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                    <thead>
+                        <tr style="background:#f8fafc;text-align:left;">
+                            <th style="padding:10px;">Kecamatan</th>
+                            <th style="padding:10px;">{{ analysis.year|add:"-1" }}</th>
+                            <th style="padding:10px;">{{ analysis.year }}</th>
+                            <th style="padding:10px;">Perubahan</th>
+                            <th style="padding:10px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in group.changes %}
+                        <tr style="border-bottom:1px solid #e2e8f0;">
+                            <td style="padding:10px;">{{ item.district }}</td>
+                            <td style="padding:10px;">{{ item.previous_value|floatformat:2 }}%</td>
+                            <td style="padding:10px;">{{ item.current_value|floatformat:2 }}%</td>
+                            <td style="padding:10px;">
+                                {% if item.change > 0 %}
+                                    <span style="color:#dc2626;font-weight:600;">+{{ item.change|floatformat:2 }}%</span>
+                                {% elif item.change < 0 %}
+                                    <span style="color:#16a34a;font-weight:600;">{{ item.change|floatformat:2 }}%</span>
+                                {% else %}
+                                    {{ item.change|floatformat:2 }}%
+                                {% endif %}
+                            </td>
+                            <td style="padding:10px;">
+                                {% if item.direction == "naik" %}
+                                    <span style="color:#dc2626;">Naik</span>
+                                {% elif item.direction == "turun" %}
+                                    <span style="color:#16a34a;">Turun</span>
+                                {% else %}
+                                    Tetap
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+                <p style="color:#64748b;">Data tahun sebelumnya tidak tersedia.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="chart-card">
+            <p>Belum tersedia perbandingan dengan tahun sebelumnya.</p>
+        </div>
+    {% endif %}
+</div>
+
+{% endif %}
+{% endblock %}
