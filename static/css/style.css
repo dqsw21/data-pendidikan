@@ -1348,3 +1348,175 @@ button:hover,
         transition: none;
     }
 }
+
+/* ===== ANALYSIS PAGE REFINEMENT ===== */
+
+.analysis-year-filter {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.analysis-year-select {
+    min-height: 42px;
+    padding: 9px 12px;
+    border: 1px solid #dbe5f3;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #192b57;
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.analysis-year-select:focus {
+    border-color: #2864e8;
+    box-shadow: 0 0 0 3px rgba(40, 100, 232, .10);
+}
+
+.analysis-year-button {
+    min-height: 42px;
+    padding: 9px 17px;
+    border: 0;
+    border-radius: 8px;
+    background: #2864e8;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.analysis-year-button:hover {
+    background: #1e50c7;
+    box-shadow: 0 4px 12px rgba(40, 100, 232, .16);
+    transform: translateY(-1px);
+}
+
+.indicator-detail {
+    margin-top: 18px;
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.8;
+}
+
+.indicator-lowest {
+    margin-top: 8px;
+}
+
+.level-indicator {
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1f7;
+}
+
+.level-indicator:last-child {
+    border-bottom: none;
+}
+
+.level-stat {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.7;
+}
+
+.level-average {
+    margin-top: 5px;
+}
+
+.change-card {
+    margin-bottom: 20px;
+}
+
+.change-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e8edf5;
+    border-radius: 10px;
+}
+
+.change-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 620px;
+}
+
+.change-table-head {
+    background: #f3f7fd;
+    text-align: left;
+}
+
+.change-cell {
+    padding: 12px 14px;
+    white-space: nowrap;
+    color: #475569;
+}
+
+.change-table-head .change-cell {
+    color: #192b57;
+    font-weight: 600;
+}
+
+.change-row {
+    border-bottom: 1px solid #edf1f7;
+    transition: background-color .15s ease;
+}
+
+.change-row:last-child {
+    border-bottom: none;
+}
+
+.change-row:hover {
+    background: #f8faff;
+}
+
+.change-positive {
+    color: #dc4c4c;
+    font-weight: 600;
+}
+
+.change-negative {
+    color: #15966a;
+    font-weight: 600;
+}
+
+.change-up {
+    color: #dc4c4c;
+}
+
+.change-down {
+    color: #15966a;
+}
+
+.analysis-muted {
+    color: #64748b;
+}
+
+@media (max-width: 700px) {
+    .analysis-year-filter {
+        align-items: stretch;
+    }
+
+    .analysis-year-select {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .analysis-year-button {
+        flex: 1;
+    }
+
+    .change-cell {
+        padding: 10px 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .analysis-year-button,
+    .change-row {
+        transition: none;
+    }
+}
