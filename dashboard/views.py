@@ -196,47 +196,6 @@ def prediction_page(request):
 
     return render(request, "dashboard/prediction.html", context)
 
-def analysis_page(request):
-    from .analysis_engine import analyze_education
-
-    analysis = analyze_education()
-
-    selected_year = request.GET.get("tahun", analysis.get("latest_year"))
-    try:
-        selected_year = int(selected_year)
-    except (ValueError, TypeError):
-        selected_year = analysis.get("latest_year")
-
-    analysis = analyze_education(selected_year)
-
-    changes_by_indicator = []
-
-    if not analysis.get("error"):
-        for indicator in analysis["indicator_summary"]:
-            changes = [
-                item for item in analysis["change_summary"]
-                if item["column"] == indicator["column"]
-            ]
-
-            changes.sort(
-                key=lambda item: abs(item["change"]),
-                reverse=True
-            )
-
-            changes_by_indicator.append({
-                "indicator": indicator,
-                "changes": changes[:5],
-            })
-
-    context = {
-        "analysis": analysis,
-        "changes_by_indicator": changes_by_indicator,
-        "active_page": "analysis",
-    }
-
-    return render(request, "dashboard/analysis.html", context)
-
-
 def model_info_page(request):
     from django.shortcuts import render
 

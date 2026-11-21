@@ -5,7 +5,6 @@ urlpatterns = [
     path('', views.landing_page, name='landing'),
     path('dashboard/', views.home, name='home'),
     path('dataset/', views.dataset_explorer, name='dataset'),
-    path('analisis/', views.analysis_page, name='analysis'),
     path('prediksi/', views.prediction_page, name='prediction'),
 ]
 
