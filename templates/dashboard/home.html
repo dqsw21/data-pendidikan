@@ -3,114 +3,820 @@
 {% block title %}Dashboard | Data Pendidikan{% endblock %}
 
 {% block content %}
+{{ chart_data|json_script:"dashboard-chart-data" }}
+
 <style>
-    .welcome-dashboard {
-        min-height: calc(100vh - 100px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 70px 24px;
-        background: linear-gradient(135deg, #f4f7fc 0%, #eef4ff 100%);
+/* ===== DATA PENDIDIKAN DASHBOARD ===== */
+.dp-dashboard {
+    --dp-ink: #192b57;
+    --dp-blue: #2864e8;
+    --dp-muted: #77859c;
+    --dp-border: #e7edf6;
+    --dp-surface: #ffffff;
+    --dp-bg: #f5f7fb;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 30px 24px 48px;
+    color: var(--dp-ink);
+    animation: dp-enter .55s ease both;
+}
+
+.dp-dashboard * {
+    box-sizing: border-box;
+}
+
+@keyframes dp-enter {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 28px;
+}
+
+.dp-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #4975c7;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.dp-live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #45b88a;
+    box-shadow: 0 0 0 4px #e5f5ed;
+}
+
+.dp-header h1 {
+    margin: 10px 0 7px;
+    font-size: clamp(27px, 3vw, 36px);
+    line-height: 1.2;
+    letter-spacing: -1.2px;
+    font-weight: 800;
+    color: var(--dp-ink);
+}
+
+.dp-header p {
+    margin: 0;
+    color: var(--dp-muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.dp-header-action {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.dp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 17px;
+    border-radius: 12px;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 700;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.dp-btn:hover {
+    transform: translateY(-2px);
+}
+
+.dp-btn-primary {
+    color: #fff !important;
+    background: var(--dp-blue);
+    box-shadow: 0 6px 16px rgba(40,100,232,.18);
+}
+
+.dp-btn-primary:hover {
+    box-shadow: 0 9px 22px rgba(40,100,232,.26);
+}
+
+.dp-btn-secondary {
+    background: #fff;
+    color: var(--dp-ink) !important;
+    border: 1px solid var(--dp-border);
+}
+
+/* Overview */
+.dp-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.dp-stat-card {
+    position: relative;
+    overflow: hidden;
+    min-height: 142px;
+    padding: 22px;
+    background: var(--dp-surface);
+    border: 1px solid var(--dp-border);
+    border-radius: 17px;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.dp-stat-card:hover {
+    transform: translateY(-3px);
+    border-color: #d5e2f7;
+    box-shadow: 0 12px 26px rgba(30,58,104,.07);
+}
+
+.dp-stat-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.dp-stat-label {
+    font-size: 12px;
+    color: #75839a;
+    font-weight: 650;
+}
+
+.dp-stat-icon {
+    display: grid;
+    place-items: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 11px;
+    font-size: 16px;
+}
+
+.dp-icon-blue { color: #2864e8; background: #edf3ff; }
+.dp-icon-green { color: #258460; background: #eaf7f1; }
+.dp-icon-violet { color: #7955c7; background: #f2edff; }
+.dp-icon-orange { color: #c57a2a; background: #fff3e5; }
+
+.dp-stat-value {
+    margin-top: 15px;
+    font-size: clamp(25px, 2.3vw, 32px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    color: var(--dp-ink);
+    line-height: 1.15;
+}
+
+.dp-stat-foot {
+    margin-top: 8px;
+    font-size: 11px;
+    color: #98a4b7;
+}
+
+/* Section headings */
+.dp-section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 30px 0 15px;
+}
+
+.dp-section-heading h2 {
+    margin: 0;
+    color: var(--dp-ink);
+    font-size: 17px;
+    letter-spacing: -.35px;
+    font-weight: 800;
+}
+
+.dp-section-heading p {
+    margin: 5px 0 0;
+    color: var(--dp-muted);
+    font-size: 12px;
+}
+
+/* Chart panels */
+.dp-chart-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.dp-chart-card {
+    min-width: 0;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--dp-border);
+    border-radius: 17px;
+    transition: box-shadow .22s ease, transform .22s ease;
+}
+
+.dp-chart-card:hover {
+    box-shadow: 0 10px 26px rgba(30,58,104,.06);
+    transform: translateY(-2px);
+}
+
+.dp-chart-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.dp-chart-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--dp-ink);
+}
+
+.dp-chart-subtitle {
+    font-size: 11px;
+    color: #93a0b4;
+    margin-top: 5px;
+}
+
+.dp-chart-tag {
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: #f2f6fc;
+    color: #607590;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.dp-chart-wrap {
+    position: relative;
+    height: 230px;
+    width: 100%;
+}
+
+/* Navigation feature cards */
+.dp-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.dp-feature-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+    padding: 22px;
+    overflow: hidden;
+    text-decoration: none !important;
+    border: 1px solid var(--dp-border);
+    border-radius: 17px;
+    background: #fff;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.dp-feature-card:hover {
+    transform: translateY(-4px);
+    border-color: #d3e0f6;
+    box-shadow: 0 12px 28px rgba(25,43,87,.08);
+}
+
+.dp-feature-icon {
+    display: grid;
+    place-items: center;
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    margin-bottom: 17px;
+    font-size: 19px;
+}
+
+.dp-feature-title {
+    color: var(--dp-ink);
+    font-size: 14px;
+    font-weight: 800;
+}
+
+.dp-feature-description {
+    margin-top: 7px;
+    max-width: 270px;
+    color: #8190a6;
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.dp-feature-arrow {
+    position: absolute;
+    right: 22px;
+    bottom: 21px;
+    color: #8ba3c9;
+    font-size: 18px;
+    transition: transform .2s ease;
+}
+
+.dp-feature-card:hover .dp-feature-arrow {
+    transform: translateX(4px);
+    color: var(--dp-blue);
+}
+
+/* Dataset context panel */
+.dp-context-panel {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 18px;
+    margin-top: 25px;
+}
+
+.dp-context-card {
+    padding: 24px;
+    border: 1px solid var(--dp-border);
+    border-radius: 17px;
+    background: #fff;
+}
+
+.dp-context-main {
+    background:
+        radial-gradient(circle at 100% 0%, rgba(93,143,242,.13), transparent 45%),
+        #fff;
+}
+
+.dp-context-label {
+    color: #7185a4;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.dp-context-card h3 {
+    margin: 12px 0 8px;
+    font-size: 19px;
+    letter-spacing: -.5px;
+    color: var(--dp-ink);
+}
+
+.dp-context-card p {
+    margin: 0;
+    max-width: 560px;
+    color: #78879e;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.dp-context-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 17px;
+}
+
+.dp-meta-chip {
+    padding: 7px 10px;
+    border: 1px solid #e8eef7;
+    border-radius: 8px;
+    color: #60748f;
+    background: #f7f9fc;
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.dp-context-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #192b57;
+    border-color: #192b57;
+}
+
+.dp-context-side .dp-context-label {
+    color: #9eb8e7;
+}
+
+.dp-context-side h3 {
+    color: #fff;
+    font-size: 18px;
+}
+
+.dp-context-side p {
+    color: #c0cce1;
+}
+
+.dp-context-side a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    margin-top: 19px;
+    color: #fff !important;
+    text-decoration: none !important;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.dp-context-side a:hover {
+    color: #a9c6ff !important;
+}
+
+/* Footer */
+.dp-dashboard-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--dp-border);
+    color: #9aa6b8;
+    font-size: 11px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .dp-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .welcome-content {
+    .dp-chart-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dp-chart-wrap {
+        height: 260px;
+    }
+}
+
+@media (max-width: 760px) {
+    .dp-dashboard {
+        padding: 22px 15px 35px;
+    }
+
+    .dp-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+    }
+
+    .dp-header-action {
         width: 100%;
-        max-width: 1000px;
-        animation: welcomeFade 0.7s ease both;
     }
 
-    .welcome-label {
-        display: flex;
-        align-items: center;
+    .dp-header-action .dp-btn {
+        flex: 1;
+    }
+
+    .dp-stat-grid {
+        gap: 10px;
+    }
+
+    .dp-stat-card {
+        padding: 17px;
+        min-height: 125px;
+    }
+
+    .dp-section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dp-feature-grid {
+        grid-template-columns: 1fr;
         gap: 12px;
-        margin-bottom: 30px;
-        color: #3974db;
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 3px;
-        text-transform: uppercase;
     }
 
-    .welcome-label::before {
-        content: "";
-        width: 35px;
-        height: 2px;
-        background: #3974db;
+    .dp-feature-card {
+        min-height: 155px;
     }
 
-    .welcome-title {
-        max-width: 850px;
-        margin: 0;
-        color: #192b57;
-        font-size: clamp(42px, 6.5vw, 82px);
-        font-weight: 800;
-        line-height: 1.12;
-        letter-spacing: -3px;
+    .dp-context-panel {
+        grid-template-columns: 1fr;
     }
 
-    .welcome-title span {
-        color: #2864e8;
+    .dp-dashboard-footer {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 420px) {
+    .dp-stat-value {
+        font-size: 24px;
     }
 
-    .welcome-description {
-        max-width: 620px;
-        margin-top: 32px;
-        color: #71809a;
-        font-size: 17px;
-        line-height: 1.9;
+    .dp-stat-label {
+        font-size: 11px;
     }
 
-    @keyframes welcomeFade {
-        from {
-            opacity: 0;
-            transform: translateY(18px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    .dp-stat-icon {
+        width: 30px;
+        height: 30px;
     }
+}
 
-    @media (max-width: 768px) {
-        .welcome-dashboard {
-            min-height: calc(100vh - 80px);
-            padding: 60px 22px;
-        }
-
-        .welcome-title {
-            font-size: clamp(40px, 11vw, 62px);
-            letter-spacing: -2px;
-        }
-
-        .welcome-description {
-            font-size: 15px;
-        }
+@media (prefers-reduced-motion: reduce) {
+    .dp-dashboard,
+    .dp-stat-card,
+    .dp-chart-card,
+    .dp-feature-card,
+    .dp-btn {
+        animation: none !important;
+        transition: none !important;
     }
-
-    @media (prefers-reduced-motion: reduce) {
-        .welcome-content {
-            animation: none;
-        }
-    }
+}
 </style>
 
-<section class="welcome-dashboard">
-    <div class="welcome-content">
-        <div class="welcome-label">
-            Data Pendidikan Indonesia
+<div class="dp-dashboard">
+
+    <!-- Header -->
+    <section class="dp-header">
+        <div>
+            <div class="dp-eyebrow">
+                <span class="dp-live-dot"></span>
+                Education Data Platform
+            </div>
+            <h1>Dashboard</h1>
+            <p>Gambaran umum data pendidikan dan akses cepat ke seluruh analisis.</p>
         </div>
 
-        <h1 class="welcome-title">
-            Selamat datang.<br>
-            Mari memahami pendidikan melalui <span>data.</span>
-        </h1>
+        <div class="dp-header-action">
+            <a href="{% url 'dataset' %}" class="dp-btn dp-btn-secondary">
+                <span>▤</span> Jelajahi Dataset
+            </a>
+            <a href="{% url 'analysis' %}" class="dp-btn dp-btn-primary">
+                <span>↗</span> Lihat Analisis
+            </a>
+        </div>
+    </section>
 
-        <p class="welcome-description">
-            Selamat datang di Data Pendidikan. Platform ini hadir untuk membantu
-            Anda memahami kondisi pendidikan melalui informasi yang disajikan
-            secara sederhana, terstruktur, dan mudah dipelajari.
-        </p>
-    </div>
-</section>
+    <!-- Statistics -->
+    <section class="dp-stat-grid">
+        <article class="dp-stat-card">
+            <div class="dp-stat-top">
+                <span class="dp-stat-label">Total Data</span>
+                <span class="dp-stat-icon dp-icon-blue">▤</span>
+            </div>
+            <div class="dp-stat-value">{{ statistics.total_data|default:0 }}</div>
+            <div class="dp-stat-foot">Baris data dalam dataset</div>
+        </article>
+
+        <article class="dp-stat-card">
+            <div class="dp-stat-top">
+                <span class="dp-stat-label">Wilayah Kecamatan</span>
+                <span class="dp-stat-icon dp-icon-green">⌖</span>
+            </div>
+            <div class="dp-stat-value">{{ statistics.total_kecamatan|default:0 }}</div>
+            <div class="dp-stat-foot">Wilayah yang tercakup dalam data</div>
+        </article>
+
+        <article class="dp-stat-card">
+            <div class="dp-stat-top">
+                <span class="dp-stat-label">Rentang Tahun</span>
+                <span class="dp-stat-icon dp-icon-violet">◷</span>
+            </div>
+            <div class="dp-stat-value">{{ statistics.tahun_awal }}–{{ statistics.tahun_akhir }}</div>
+            <div class="dp-stat-foot">Periode data pendidikan tersedia</div>
+        </article>
+
+        <article class="dp-stat-card">
+            <div class="dp-stat-top">
+                <span class="dp-stat-label">Jenjang Pendidikan</span>
+                <span class="dp-stat-icon dp-icon-orange">⌂</span>
+            </div>
+            <div class="dp-stat-value">{{ statistics.total_jenjang|default:0 }}</div>
+            <div class="dp-stat-foot">SMA · MA · SMK</div>
+        </article>
+    </section>
+
+    <!-- Charts -->
+    <section>
+        <div class="dp-section-heading">
+            <div>
+                <h2>Tren Indikator Pendidikan</h2>
+                <p>Pergerakan nilai rata-rata indikator dari tahun ke tahun.</p>
+            </div>
+        </div>
+
+        <div class="dp-chart-grid">
+            <article class="dp-chart-card">
+                <div class="dp-chart-head">
+                    <div>
+                        <div class="dp-chart-title">Angka Mengulang</div>
+                        <div class="dp-chart-subtitle">Rata-rata berdasarkan jenjang</div>
+                    </div>
+                    <span class="dp-chart-tag">Tren Tahunan</span>
+                </div>
+                <div class="dp-chart-wrap">
+                    <canvas id="dpChartMengulang"></canvas>
+                </div>
+            </article>
+
+            <article class="dp-chart-card">
+                <div class="dp-chart-head">
+                    <div>
+                        <div class="dp-chart-title">Angka Putus Sekolah</div>
+                        <div class="dp-chart-subtitle">Rata-rata berdasarkan jenjang</div>
+                    </div>
+                    <span class="dp-chart-tag">Tren Tahunan</span>
+                </div>
+                <div class="dp-chart-wrap">
+                    <canvas id="dpChartPutus"></canvas>
+                </div>
+            </article>
+
+            <article class="dp-chart-card">
+                <div class="dp-chart-head">
+                    <div>
+                        <div class="dp-chart-title">Angka Lulusan</div>
+                        <div class="dp-chart-subtitle">Rata-rata berdasarkan jenjang</div>
+                    </div>
+                    <span class="dp-chart-tag">Tren Tahunan</span>
+                </div>
+                <div class="dp-chart-wrap">
+                    <canvas id="dpChartLulusan"></canvas>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Feature navigation -->
+    <section>
+        <div class="dp-section-heading">
+            <div>
+                <h2>Jelajahi Platform</h2>
+                <p>Gunakan fitur untuk memahami data pendidikan dari sudut yang berbeda.</p>
+            </div>
+        </div>
+
+        <div class="dp-feature-grid">
+            <a href="{% url 'dataset' %}" class="dp-feature-card">
+                <span class="dp-feature-icon dp-icon-blue">▤</span>
+                <span class="dp-feature-title">Eksplorasi Data</span>
+                <span class="dp-feature-description">Telusuri dataset, cari wilayah, dan lihat data berdasarkan tahun.</span>
+                <span class="dp-feature-arrow">→</span>
+            </a>
+
+            <a href="{% url 'analysis' %}" class="dp-feature-card">
+                <span class="dp-feature-icon dp-icon-green">⌁</span>
+                <span class="dp-feature-title">Analisis Pendidikan</span>
+                <span class="dp-feature-description">Pelajari tren, perubahan indikator, dan perbandingan kondisi pendidikan.</span>
+                <span class="dp-feature-arrow">→</span>
+            </a>
+
+            <a href="{% url 'prediction' %}" class="dp-feature-card">
+                <span class="dp-feature-icon dp-icon-violet">⌗</span>
+                <span class="dp-feature-title">Prediksi Pendidikan</span>
+                <span class="dp-feature-description">Lihat estimasi indikator pendidikan dan proyeksi tahun mendatang.</span>
+                <span class="dp-feature-arrow">→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Dataset context -->
+    <section class="dp-context-panel">
+        <article class="dp-context-card dp-context-main">
+            <div class="dp-context-label">Tentang Dataset</div>
+            <h3>Data sebagai dasar memahami pendidikan.</h3>
+            <p>
+                Data Pendidikan menyajikan indikator pendidikan dalam bentuk yang
+                lebih mudah ditelusuri, dibandingkan, dan dipahami. Gunakan data
+                historis untuk melihat perubahan serta mengenali pola pada setiap
+                jenjang pendidikan.
+            </p>
+            <div class="dp-context-meta">
+                <span class="dp-meta-chip">SMA</span>
+                <span class="dp-meta-chip">MA</span>
+                <span class="dp-meta-chip">SMK</span>
+                <span class="dp-meta-chip">Data Historis</span>
+            </div>
+        </article>
+
+        <article class="dp-context-card dp-context-side">
+            <div class="dp-context-label">Mulai Analisis</div>
+            <h3>Temukan pola di balik angka.</h3>
+            <p>Mulai dari data mentah, lanjutkan dengan analisis, dan gunakan prediksi sebagai gambaran kemungkinan ke depan.</p>
+            <a href="{% url 'analysis' %}">Mulai eksplorasi <span>→</span></a>
+        </article>
+    </section>
+
+    <footer class="dp-dashboard-footer">
+        <span>Data Pendidikan · Education Analytics</span>
+        <span>Visualisasi berdasarkan dataset yang tersedia</span>
+    </footer>
+</div>
+
+<script>
+(function () {
+    const payloadElement = document.getElementById("dashboard-chart-data");
+    if (!payloadElement || typeof Chart === "undefined") return;
+
+    let chartData;
+    try {
+        chartData = JSON.parse(payloadElement.textContent);
+    } catch (error) {
+        console.error("Dashboard chart data gagal dibaca.", error);
+        return;
+    }
+
+    const palette = [
+        { border: "#2864e8", background: "rgba(40,100,232,.08)" },
+        { border: "#25a47a", background: "rgba(37,164,122,.08)" },
+        { border: "#8a65d6", background: "rgba(138,101,214,.08)" }
+    ];
+
+    function createDashboardChart(canvasId, category) {
+        const canvas = document.getElementById(canvasId);
+        const source = chartData[category];
+
+        if (!canvas || !source) return;
+
+        const datasets = (source.datasets || []).map((dataset, index) => ({
+            label: dataset.label,
+            data: dataset.data,
+            borderColor: palette[index].border,
+            backgroundColor: palette[index].background,
+            borderWidth: 2.5,
+            pointRadius: 3,
+            pointHoverRadius: 5,
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 2,
+            tension: 0.36,
+            fill: false
+        }));
+
+        new Chart(canvas, {
+            type: "line",
+            data: {
+                labels: source.labels,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: "index"
+                },
+                animation: {
+                    duration: 850,
+                    easing: "easeOutQuart"
+                },
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            usePointStyle: true,
+                            pointStyle: "circle",
+                            boxWidth: 7,
+                            boxHeight: 7,
+                            padding: 16,
+                            color: "#73829a",
+                            font: {
+                                size: 10,
+                                family: "inherit"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: "#192b57",
+                        titleColor: "#fff",
+                        bodyColor: "#dce7fa",
+                        padding: 12,
+                        cornerRadius: 9,
+                        displayColors: true
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: {
+                            color: "#92a0b5",
+                            font: { size: 10 }
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false, dash: [4, 4] },
+                        grid: {
+                            color: "rgba(120,145,180,.12)",
+                            drawTicks: false
+                        },
+                        ticks: {
+                            color: "#92a0b5",
+                            padding: 8,
+                            font: { size: 10 }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    createDashboardChart("dpChartMengulang", "mengulang");
+    createDashboardChart("dpChartPutus", "putus_sekolah");
+    createDashboardChart("dpChartLulusan", "lulusan");
+})();
+</script>
 {% endblock %}
