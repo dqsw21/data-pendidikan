@@ -27,44 +27,31 @@ def home(request):
 
 def dataset_explorer(request):
     from django.core.paginator import Paginator
+    from dashboard.dataset_processor import load_new_dataset
 
-    df = load_dataset()
+    df = load_new_dataset()
 
     search_query = request.GET.get("q", "").strip()
     selected_year = request.GET.get("tahun", "").strip()
 
     if search_query:
         df = df[
-            df["bps_nama_kecamatan"].str.contains(
+            df["provinsi"].str.contains(
                 search_query,
                 case=False,
-                na=False
+                na=False,
+                regex=False
             )
         ]
 
     if selected_year:
-        df = df[df["tahun"] == int(selected_year)]
+        df = df[df["tahun_ajar"] == selected_year]
 
-    columns = [
-        "bps_nama_kecamatan",
-        "tahun",
-        "angka_mengulang_sma",
-        "angka_putus_sekolah_sma",
-        "angka_lulusan_sma",
-        "angka_mengulang_ma",
-        "angka_putus_sekolah_ma",
-        "angka_lulusan_ma",
-        "angka_mengulang_smk",
-        "angka_putus_sekolah_smk",
-        "angka_lulusan_smk",
-    ]
+    table_data = df.to_dict("records")
+    years = ["2023/2024", "2024/2025", "2025/2026"]
 
-    table_data = df[columns].fillna(0).to_dict("records")
-    years = sorted(load_dataset()["tahun"].dropna().unique().astype(int).tolist())
-
-    paginator = Paginator(table_data, 10)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+    paginator = Paginator(table_data, 15)
+    page_obj = paginator.get_page(request.GET.get("page"))
 
     context = {
         "page_obj": page_obj,
@@ -76,6 +63,7 @@ def dataset_explorer(request):
     }
 
     return render(request, "dashboard/dataset.html", context)
+
 
 
 def prediction_page(request):

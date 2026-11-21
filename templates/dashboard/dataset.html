@@ -3,98 +3,335 @@
 {% block title %}Eksplorasi Data | Data Pendidikan{% endblock %}
 
 {% block content %}
-<header class="topbar">
-    <h2>Eksplorasi Data</h2>
-</header>
+<style>
+.dataset-modern {
+    max-width: 1440px;
+    margin: auto;
+    padding: 30px 24px 45px;
+    color: #192b57;
+    animation: datasetIn .45s ease both;
+}
+@keyframes datasetIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.ds-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+.ds-eyebrow {
+    color: #2864e8;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
+.ds-header h1 {
+    margin: 9px 0 7px;
+    font-size: clamp(26px, 3vw, 34px);
+    letter-spacing: -1px;
+    font-weight: 800;
+}
+.ds-header p {
+    margin: 0;
+    color: #78879e;
+    font-size: 13px;
+    line-height: 1.7;
+}
+.ds-period {
+    flex-shrink: 0;
+    border: 1px solid #e5ecf7;
+    background: #fff;
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: #60748f;
+    font-size: 12px;
+    font-weight: 700;
+}
+.ds-filter-panel {
+    background: #fff;
+    border: 1px solid #e5ecf7;
+    border-radius: 17px;
+    padding: 20px;
+    margin-bottom: 18px;
+    box-shadow: 0 5px 18px rgba(25,43,87,.025);
+}
+.ds-filter-form {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.4fr) minmax(190px, .8fr) auto;
+    gap: 12px;
+    align-items: end;
+}
+.ds-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #73839b;
+    font-size: 11px;
+    font-weight: 750;
+}
+.ds-field input,
+.ds-field select {
+    width: 100%;
+    min-height: 44px;
+    padding: 0 13px;
+    color: #263b64;
+    background: #f9fbfe;
+    border: 1px solid #e5ecf5;
+    border-radius: 10px;
+    outline: none;
+    font: inherit;
+    font-size: 13px;
+    transition: border .2s, box-shadow .2s, background .2s;
+}
+.ds-field input:focus,
+.ds-field select:focus {
+    border-color: #8bb0fa;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(40,100,232,.08);
+}
+.ds-submit {
+    min-height: 44px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    background: #2864e8;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(40,100,232,.16);
+    transition: transform .2s, box-shadow .2s;
+}
+.ds-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(40,100,232,.23);
+}
+.ds-table-card {
+    overflow: hidden;
+    border: 1px solid #e5ecf7;
+    border-radius: 17px;
+    background: #fff;
+    box-shadow: 0 5px 18px rgba(25,43,87,.025);
+}
+.ds-table-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    border-bottom: 1px solid #edf1f7;
+}
+.ds-table-heading {
+    color: #192b57;
+    font-size: 14px;
+    font-weight: 800;
+}
+.ds-count {
+    color: #75859d;
+    font-size: 11px;
+}
+.ds-count strong {
+    color: #2864e8;
+}
+.ds-table-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.ds-table {
+    width: 100%;
+    min-width: 1120px;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+.ds-table thead th {
+    padding: 13px 14px;
+    background: #f7f9fc;
+    color: #73839b;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .45px;
+    border-bottom: 1px solid #e9eef6;
+}
+.ds-table tbody td {
+    padding: 14px;
+    color: #5f718d;
+    font-size: 12px;
+    border-bottom: 1px solid #f0f3f8;
+    transition: background .15s;
+}
+.ds-table tbody tr:hover td {
+    background: #f8faff;
+}
+.ds-table tbody tr:last-child td {
+    border-bottom: none;
+}
+.ds-index {
+    color: #a0aec0 !important;
+    width: 55px;
+}
+.ds-province {
+    color: #243b67 !important;
+    font-weight: 750;
+}
+.ds-year {
+    color: #2864e8 !important;
+    font-weight: 700;
+}
+.ds-level {
+    display: inline-block;
+    padding: 5px 9px;
+    background: #edf3ff;
+    color: #2864e8;
+    border-radius: 7px;
+    font-size: 10px;
+    font-weight: 800;
+}
+.ds-number {
+    font-variant-numeric: tabular-nums;
+    color: #405778 !important;
+}
+.ds-empty {
+    padding: 50px 20px !important;
+    text-align: center;
+    color: #97a5b9 !important;
+}
+.ds-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border-top: 1px solid #edf1f7;
+    color: #8190a6;
+    font-size: 12px;
+}
+.ds-pagination a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #e5ecf7;
+    background: #fff;
+    color: #2864e8 !important;
+    text-decoration: none !important;
+    font-weight: 700;
+    transition: background .2s;
+}
+.ds-pagination a:hover {
+    background: #edf3ff;
+}
+@media (max-width: 700px) {
+    .dataset-modern { padding: 22px 14px 32px; }
+    .ds-header { align-items: flex-start; flex-direction: column; }
+    .ds-filter-form { grid-template-columns: 1fr; }
+    .ds-submit { width: 100%; }
+    .ds-table-top { align-items: flex-start; flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .dataset-modern, .ds-submit { animation: none; transition: none; }
+}
+</style>
 
-<section class="welcome-section">
-    <h1>Eksplorasi Data Pendidikan</h1>
-    <p>Telusuri dan amati data angka mengulang, putus sekolah, dan lulusan berdasarkan kecamatan dan tahun.</p>
-</section>
+<div class="dataset-modern">
+    <header class="ds-header">
+        <div>
+            <div class="ds-eyebrow">Education Data Explorer</div>
+            <h1>Eksplorasi Data</h1>
+            <p>Telusuri data pendidikan tingkat provinsi berdasarkan tahun ajar dan jenjang.</p>
+        </div>
+        <div class="ds-period">2023/2024 — 2025/2026</div>
+    </header>
 
-<section class="dataset-section">
-    <div class="dataset-toolbar">
-        <form method="get" class="dataset-filter">
-            <input
-                type="text"
-                name="q"
-                value="{{ search_query }}"
-                placeholder="Cari nama kecamatan..."
-            >
-
-            <select name="tahun">
-                <option value="">Semua Tahun</option>
-                {% for year in years %}
-                    <option value="{{ year }}" {% if selected_year == year|stringformat:"s" %}selected{% endif %}>
+    <section class="ds-filter-panel">
+        <form method="get" class="ds-filter-form">
+            <div class="ds-field">
+                <label for="ds-search">Provinsi</label>
+                <input
+                    id="ds-search"
+                    type="text"
+                    name="q"
+                    value="{{ search_query }}"
+                    placeholder="Cari nama provinsi..."
+                >
+            </div>
+            <div class="ds-field">
+                <label for="ds-year">Tahun Ajar</label>
+                <select id="ds-year" name="tahun">
+                    <option value="">Semua Tahun Ajar</option>
+                    {% for year in years %}
+                    <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>
                         {{ year }}
                     </option>
-                {% endfor %}
-            </select>
-
-            <button type="submit">Terapkan</button>
-            <a href="{% url 'dataset' %}">Reset</a>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="ds-submit">Terapkan Filter</button>
         </form>
+    </section>
 
-        <p class="dataset-count">
-            Menampilkan {{ page_obj.start_index|default:0 }}–{{ page_obj.end_index|default:0 }} dari {{ total_filtered }} data
-        </p>
-    </div>
+    <section class="ds-table-card">
+        <div class="ds-table-top">
+            <div class="ds-table-heading">Data Pendidikan Provinsi</div>
+            <div class="ds-count">
+                Menampilkan <strong>{{ page_obj.start_index|default:0 }}–{{ page_obj.end_index|default:0 }}</strong>
+                dari <strong>{{ total_filtered }}</strong> data
+            </div>
+        </div>
 
-    <div class="dataset-table-wrapper">
-        <table class="dataset-table">
-            <thead>
-                <tr>
-                    <th>No.</th>
-                    <th>Kecamatan</th>
-                    <th>Tahun</th>
-                    <th>Mengulang SMA</th>
-                    <th>Putus Sekolah SMA</th>
-                    <th>Lulusan SMA</th>
-                    <th>Mengulang MA</th>
-                    <th>Putus Sekolah MA</th>
-                    <th>Lulusan MA</th>
-                    <th>Mengulang SMK</th>
-                    <th>Putus Sekolah SMK</th>
-                    <th>Lulusan SMK</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in page_obj %}
+        <div class="ds-table-scroll">
+            <table class="ds-table">
+                <thead>
                     <tr>
-                        <td>{{ page_obj.start_index|add:forloop.counter0 }}</td>
-                        <td class="district-name">{{ item.bps_nama_kecamatan }}</td>
-                        <td>{{ item.tahun }}</td>
-                        <td>{{ item.angka_mengulang_sma|floatformat:2 }}%</td>
-                        <td>{{ item.angka_putus_sekolah_sma|floatformat:2 }}%</td>
-                        <td>{{ item.angka_lulusan_sma|floatformat:2 }}%</td>
-                        <td>{{ item.angka_mengulang_ma|floatformat:2 }}%</td>
-                        <td>{{ item.angka_putus_sekolah_ma|floatformat:2 }}%</td>
-                        <td>{{ item.angka_lulusan_ma|floatformat:2 }}%</td>
-                        <td>{{ item.angka_mengulang_smk|floatformat:2 }}%</td>
-                        <td>{{ item.angka_putus_sekolah_smk|floatformat:2 }}%</td>
-                        <td>{{ item.angka_lulusan_smk|floatformat:2 }}%</td>
+                        <th>No.</th>
+                        <th>Provinsi</th>
+                        <th>Tahun Ajar</th>
+                        <th>Jenjang</th>
+                        <th>Peserta Didik Baru</th>
+                        <th>Jumlah Peserta Didik</th>
+                        <th>Lulusan</th>
+                        <th>Mengulang (Jumlah)</th>
+                        <th>Mengulang (%)</th>
+                        <th>Putus (Jumlah)</th>
+                        <th>Putus (%)</th>
                     </tr>
-                {% empty %}
+                </thead>
+                <tbody>
+                    {% for item in page_obj %}
                     <tr>
-                        <td colspan="12" class="empty-data">Data tidak ditemukan.</td>
+                        <td class="ds-index">{{ page_obj.start_index|add:forloop.counter0 }}</td>
+                        <td class="ds-province">{{ item.provinsi }}</td>
+                        <td class="ds-year">{{ item.tahun_ajar }}</td>
+                        <td><span class="ds-level">{{ item.jenjang }}</span></td>
+                        <td class="ds-number">{{ item.peserta_didik_baru }}</td>
+                        <td class="ds-number">{{ item.jumlah_peserta_didik }}</td>
+                        <td class="ds-number">{{ item.lulusan }}</td>
+                        <td class="ds-number">{{ item.mengulang_jumlah }}</td>
+                        <td class="ds-number">{{ item.mengulang_persentase|floatformat:2 }}</td>
+                        <td class="ds-number">{{ item.putus_jumlah }}</td>
+                        <td class="ds-number">{{ item.putus_persentase|floatformat:2 }}</td>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+                    {% empty %}
+                    <tr>
+                        <td colspan="11" class="ds-empty">Data tidak ditemukan. Coba ubah kata pencarian atau tahun ajar.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    {% if page_obj.paginator.num_pages > 1 %}
-        <div class="dataset-pagination">
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="ds-pagination">
             {% if page_obj.has_previous %}
-                <a href="?q={{ search_query|urlencode }}&tahun={{ selected_year }}&page={{ page_obj.previous_page_number }}">Sebelumnya</a>
+            <a href="?q={{ search_query|urlencode }}&tahun={{ selected_year|urlencode }}&page={{ page_obj.previous_page_number }}">← Sebelumnya</a>
             {% endif %}
-
             <span>Halaman {{ page_obj.number }} dari {{ page_obj.paginator.num_pages }}</span>
-
             {% if page_obj.has_next %}
-                <a href="?q={{ search_query|urlencode }}&tahun={{ selected_year }}&page={{ page_obj.next_page_number }}">Selanjutnya</a>
+            <a href="?q={{ search_query|urlencode }}&tahun={{ selected_year|urlencode }}&page={{ page_obj.next_page_number }}">Selanjutnya →</a>
             {% endif %}
         </div>
-    {% endif %}
-</section>
+        {% endif %}
+    </section>
+</div>
 {% endblock %}
