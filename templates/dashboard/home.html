@@ -1,1047 +1,116 @@
 {% extends "base.html" %}
-{% load static %}
 
-{% block title %}Beranda | Data Pendidikan{% endblock %}
+{% block title %}Dashboard | Data Pendidikan{% endblock %}
 
 {% block content %}
 <style>
-/* ==========================================
-   DATA PENDIDIKAN — DASHBOARD INTRO
-========================================== */
-.dp-home {
-    --dp-ink: #202b36;
-    --dp-navy: #183b56;
-    --dp-blue: #39749b;
-    --dp-muted: #748391;
-    --dp-line: #dfe6e9;
-    --dp-bg: #f7f8f6;
-    color: var(--dp-ink);
-    background: var(--dp-bg);
-    font-family: inherit;
-    overflow: hidden;
-}
-
-.dp-home * {
-    box-sizing: border-box;
-}
-
-.dp-home a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.dp-container {
-    width: min(1160px, calc(100% - 64px));
-    margin-inline: auto;
-}
-
-.dp-eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    color: #507d82;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.dp-eyebrow::before {
-    content: "";
-    width: 25px;
-    height: 1px;
-    background: #659a99;
-}
-
-.dp-hero {
-    min-height: 570px;
-    display: grid;
-    grid-template-columns: 1.15fr .85fr;
-    align-items: center;
-    gap: 65px;
-    padding-block: 90px 105px;
-}
-
-.dp-hero-copy {
-    animation: dpFadeUp .8s ease both;
-}
-
-.dp-hero h1 {
-    margin: 27px 0;
-    max-width: 760px;
-    font-size: clamp(46px, 6.5vw, 82px);
-    font-weight: 650;
-    line-height: 1.04;
-    letter-spacing: -4px;
-}
-
-.dp-hero h1 span {
-    color: var(--dp-blue);
-}
-
-.dp-hero-description {
-    max-width: 570px;
-    color: var(--dp-muted);
-    font-size: 16px;
-    line-height: 1.9;
-}
-
-.dp-hero-actions {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    flex-wrap: wrap;
-    margin-top: 35px;
-}
-
-.dp-primary-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 22px;
-    background: var(--dp-navy);
-    color: white !important;
-    padding: 16px 21px;
-    border-radius: 5px;
-    font-size: 13px;
-    font-weight: 600;
-    transition: transform .25s ease, background .25s ease;
-}
-
-.dp-primary-link:hover {
-    transform: translateY(-3px);
-    background: #245778;
-}
-
-.dp-primary-link span {
-    transition: transform .25s ease;
-}
-
-.dp-primary-link:hover span {
-    transform: translateX(4px);
-}
-
-.dp-text-link {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--dp-navy) !important;
-    padding: 12px 4px;
-}
-
-.dp-hero-visual {
-    min-height: 350px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: dpFadeIn 1.2s ease both;
-}
-
-.dp-visual-circle {
-    width: min(340px, 80%);
-    aspect-ratio: 1;
-    border: 1px solid #d4e0e5;
-    border-radius: 50%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.dp-visual-circle::before {
-    content: "";
-    position: absolute;
-    inset: 23px;
-    border: 1px solid #e0e8eb;
-    border-radius: 50%;
-}
-
-.dp-visual-circle::after {
-    content: "";
-    position: absolute;
-    inset: 48px;
-    border: 1px dashed #d5e0e6;
-    border-radius: 50%;
-    animation: dpRotate 35s linear infinite;
-}
-
-.dp-visual-center {
-    width: 118px;
-    height: 118px;
-    border-radius: 28px;
-    background: var(--dp-navy);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 18px 45px rgba(24, 59, 86, .15);
-    z-index: 2;
-    animation: dpFloat 5s ease-in-out infinite;
-}
-
-.dp-visual-center strong {
-    font-size: 32px;
-    letter-spacing: -2px;
-}
-
-.dp-visual-center small {
-    font-size: 9px;
-    letter-spacing: 2px;
-    opacity: .7;
-}
-
-.dp-orbit-item {
-    position: absolute;
-    z-index: 3;
-    background: white;
-    border: 1px solid var(--dp-line);
-    border-radius: 8px;
-    padding: 12px 15px;
-    box-shadow: 0 10px 28px rgba(31, 53, 69, .04);
-    animation: dpFloat 6s ease-in-out infinite;
-}
-
-.dp-orbit-item strong {
-    display: block;
-    font-size: 13px;
-    color: var(--dp-navy);
-}
-
-.dp-orbit-item small {
-    font-size: 10px;
-    color: var(--dp-muted);
-}
-
-.dp-orbit-a {
-    top: 13%;
-    right: 0;
-}
-
-.dp-orbit-b {
-    bottom: 13%;
-    left: 0;
-    animation-delay: -2s;
-}
-
-.dp-orbit-dot {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: #73a8a1;
-    border-radius: 50%;
-    top: 20%;
-    left: 16%;
-    box-shadow: 0 0 0 7px rgba(115, 168, 161, .12);
-}
-
-.dp-intro-band {
-    border-top: 1px solid var(--dp-line);
-    border-bottom: 1px solid var(--dp-line);
-    padding: 30px 0;
-}
-
-.dp-intro-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-}
-
-.dp-intro-item {
-    padding: 12px 30px;
-    border-right: 1px solid var(--dp-line);
-}
-
-.dp-intro-item:first-child {
-    padding-left: 0;
-}
-
-.dp-intro-item:last-child {
-    border-right: 0;
-}
-
-.dp-intro-item strong {
-    display: block;
-    font-size: 21px;
-    font-weight: 650;
-    color: var(--dp-navy);
-    margin-bottom: 8px;
-}
-
-.dp-intro-item p {
-    font-size: 12px;
-    color: var(--dp-muted);
-}
-
-.dp-section {
-    padding-block: 105px;
-}
-
-.dp-section-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    gap: 30px;
-    margin-bottom: 45px;
-}
-
-.dp-section-heading h2 {
-    font-size: clamp(29px, 4vw, 43px);
-    line-height: 1.15;
-    letter-spacing: -1.7px;
-    font-weight: 650;
-    margin-top: 17px;
-}
-
-.dp-section-heading p {
-    max-width: 400px;
-    color: var(--dp-muted);
-    font-size: 13px;
-    line-height: 1.8;
-}
-
-.dp-about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 65px;
-    align-items: start;
-}
-
-.dp-about-text {
-    font-size: 15px;
-    line-height: 2;
-    color: var(--dp-muted);
-}
-
-.dp-about-text p + p {
-    margin-top: 20px;
-}
-
-.dp-about-note {
-    margin-top: 30px;
-    padding: 20px 0 20px 20px;
-    border-left: 2px solid #79a7a5;
-    color: var(--dp-navy);
-    font-size: 14px;
-    line-height: 1.8;
-}
-
-.dp-data-panel {
-    background: #fff;
-    border: 1px solid var(--dp-line);
-    border-radius: 7px;
-    padding: 30px;
-}
-
-.dp-data-panel h3 {
-    font-size: 15px;
-    font-weight: 650;
-    margin-bottom: 25px;
-}
-
-.dp-period {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 17px 0;
-    border-top: 1px solid var(--dp-line);
-}
-
-.dp-period strong {
-    font-size: 14px;
-    color: var(--dp-navy);
-}
-
-.dp-period span {
-    font-size: 11px;
-    color: #638b82;
-    background: #edf4f1;
-    border-radius: 4px;
-    padding: 7px 10px;
-}
-
-.dp-data-caption {
-    font-size: 12px;
-    color: var(--dp-muted);
-    line-height: 1.8;
-    margin-top: 22px;
-}
-
-.dp-indicators {
-    background: #eef2f4;
-    padding-block: 100px;
-}
-
-.dp-indicator-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0 45px;
-}
-
-.dp-indicator {
-    display: flex;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 24px 0;
-    border-bottom: 1px solid #d8e1e5;
-}
-
-.dp-indicator-number {
-    font-size: 12px;
-    color: #67918f;
-    letter-spacing: 1px;
-    padding-top: 3px;
-}
-
-.dp-indicator h3 {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 7px;
-}
-
-.dp-indicator p {
-    font-size: 12px;
-    color: var(--dp-muted);
-    line-height: 1.7;
-}
-
-.dp-feature-section {
-    padding-block: 100px;
-}
-
-.dp-feature-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-top: 1px solid var(--dp-line);
-}
-
-.dp-feature {
-    padding: 35px 28px 35px 0;
-    border-right: 1px solid var(--dp-line);
-    transition: transform .3s ease;
-}
-
-.dp-feature:not(:first-child) {
-    padding-left: 28px;
-}
-
-.dp-feature:last-child {
-    border-right: 0;
-}
-
-.dp-feature:hover {
-    transform: translateY(-5px);
-}
-
-.dp-feature-index {
-    font-size: 11px;
-    letter-spacing: 1px;
-    color: #709b99;
-}
-
-.dp-feature h3 {
-    font-size: 21px;
-    font-weight: 650;
-    margin: 24px 0 12px;
-    letter-spacing: -.5px;
-}
-
-.dp-feature p {
-    font-size: 13px;
-    color: var(--dp-muted);
-    line-height: 1.85;
-}
-
-.dp-feature a {
-    display: inline-flex;
-    margin-top: 23px;
-    font-size: 12px;
-    font-weight: 650;
-    color: var(--dp-navy);
-    gap: 10px;
-}
-
-.dp-feature a span {
-    transition: transform .2s ease;
-}
-
-.dp-feature a:hover span {
-    transform: translateX(4px);
-}
-
-.dp-guide {
-    padding-block: 90px;
-    border-top: 1px solid var(--dp-line);
-}
-
-.dp-guide-list {
-    margin-top: 40px;
-    border-top: 1px solid var(--dp-line);
-}
-
-.dp-guide-row {
-    display: grid;
-    grid-template-columns: 90px 1fr 1fr;
-    gap: 25px;
-    padding: 27px 0;
-    border-bottom: 1px solid var(--dp-line);
-    align-items: center;
-}
-
-.dp-guide-row > span {
-    color: #67918f;
-    font-size: 12px;
-}
-
-.dp-guide-row h3 {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.dp-guide-row p {
-    font-size: 12px;
-    color: var(--dp-muted);
-    line-height: 1.8;
-}
-
-.dp-closing {
-    padding-block: 85px;
-    background: var(--dp-navy);
-    color: white;
-}
-
-.dp-closing-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 30px;
-}
-
-.dp-closing h2 {
-    font-size: clamp(30px, 4vw, 46px);
-    letter-spacing: -1.5px;
-    line-height: 1.2;
-    max-width: 650px;
-}
-
-.dp-closing p {
-    color: #c5d4df;
-    font-size: 13px;
-    margin-top: 17px;
-    line-height: 1.8;
-}
-
-.dp-closing-button {
-    flex-shrink: 0;
-    display: inline-flex;
-    gap: 20px;
-    align-items: center;
-    padding: 17px 22px;
-    background: white;
-    color: var(--dp-navy) !important;
-    border-radius: 5px;
-    font-size: 13px;
-    font-weight: 650;
-    transition: transform .25s ease;
-}
-
-.dp-closing-button:hover {
-    transform: translateY(-3px);
-}
-
-.dp-reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity .7s ease, transform .7s ease;
-}
-
-.dp-reveal.dp-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@keyframes dpFadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes dpFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes dpFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-9px); }
-}
-
-@keyframes dpRotate {
-    to { transform: rotate(360deg); }
-}
-
-@media (max-width: 900px) {
-    .dp-hero {
-        grid-template-columns: 1fr;
-        gap: 20px;
-        padding-block: 75px;
+    .welcome-dashboard {
+        min-height: calc(100vh - 100px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 70px 24px;
+        background: linear-gradient(135deg, #f4f7fc 0%, #eef4ff 100%);
     }
 
-    .dp-hero-visual {
-        min-height: 330px;
+    .welcome-content {
+        width: 100%;
+        max-width: 1000px;
+        animation: welcomeFade 0.7s ease both;
     }
 
-    .dp-about-grid {
-        grid-template-columns: 1fr;
-        gap: 35px;
-    }
-
-    .dp-section-heading {
-        align-items: start;
-        flex-direction: column;
-    }
-
-    .dp-feature-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .dp-feature,
-    .dp-feature:not(:first-child) {
-        border-right: 0;
-        border-bottom: 1px solid var(--dp-line);
-        padding: 30px 0;
-    }
-
-    .dp-feature:last-child {
-        border-bottom: 0;
-    }
-}
-
-@media (max-width: 600px) {
-    .dp-container {
-        width: calc(100% - 36px);
-    }
-
-    .dp-hero {
-        padding-block: 55px 70px;
-    }
-
-    .dp-hero h1 {
-        font-size: 48px;
-        letter-spacing: -2.5px;
-    }
-
-    .dp-hero-description {
-        font-size: 14px;
-    }
-
-    .dp-hero-visual {
-        min-height: 280px;
-    }
-
-    .dp-visual-circle {
-        width: 270px;
-    }
-
-    .dp-visual-center {
-        width: 95px;
-        height: 95px;
-        border-radius: 22px;
-    }
-
-    .dp-orbit-item {
-        padding: 10px 12px;
-    }
-
-    .dp-intro-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .dp-intro-item,
-    .dp-intro-item:first-child {
-        border-right: 0;
-        border-bottom: 1px solid var(--dp-line);
-        padding: 17px 0;
-    }
-
-    .dp-intro-item:last-child {
-        border-bottom: 0;
-    }
-
-    .dp-section,
-    .dp-feature-section {
-        padding-block: 70px;
-    }
-
-    .dp-indicators {
-        padding-block: 70px;
-    }
-
-    .dp-indicator-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .dp-data-panel {
-        padding: 22px;
-    }
-
-    .dp-guide-row {
-        grid-template-columns: 40px 1fr;
+    .welcome-label {
+        display: flex;
+        align-items: center;
         gap: 12px;
+        margin-bottom: 30px;
+        color: #3974db;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
     }
 
-    .dp-guide-row p {
-        grid-column: 2;
+    .welcome-label::before {
+        content: "";
+        width: 35px;
+        height: 2px;
+        background: #3974db;
     }
 
-    .dp-closing-inner {
-        align-items: flex-start;
-        flex-direction: column;
+    .welcome-title {
+        max-width: 850px;
+        margin: 0;
+        color: #192b57;
+        font-size: clamp(42px, 6.5vw, 82px);
+        font-weight: 800;
+        line-height: 1.12;
+        letter-spacing: -3px;
     }
 
-    .dp-closing {
-        padding-block: 65px;
+    .welcome-title span {
+        color: #2864e8;
     }
-}
 
-@media (prefers-reduced-motion: reduce) {
-    .dp-home *,
-    .dp-home *::before,
-    .dp-home *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-        scroll-behavior: auto !important;
+    .welcome-description {
+        max-width: 620px;
+        margin-top: 32px;
+        color: #71809a;
+        font-size: 17px;
+        line-height: 1.9;
     }
-}
+
+    @keyframes welcomeFade {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .welcome-dashboard {
+            min-height: calc(100vh - 80px);
+            padding: 60px 22px;
+        }
+
+        .welcome-title {
+            font-size: clamp(40px, 11vw, 62px);
+            letter-spacing: -2px;
+        }
+
+        .welcome-description {
+            font-size: 15px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .welcome-content {
+            animation: none;
+        }
+    }
 </style>
 
-<div class="dp-home">
-
-    <!-- HERO -->
-    <section class="dp-container dp-hero">
-        <div class="dp-hero-copy">
-            <div class="dp-eyebrow">Portal Data Pendidikan</div>
-
-            <h1>
-                Selamat datang.<br>
-                Mari memahami<br>
-                <span>pendidikan lewat data.</span>
-            </h1>
-
-            <p class="dp-hero-description">
-                Data Pendidikan Indonesia merupakan ruang untuk melihat,
-                memahami, dan mempelajari kondisi pendidikan melalui data.
-                Informasi disajikan agar lebih mudah dibaca, dibandingkan,
-                dan dijadikan bahan analisis.
-            </p>
-
-            <div class="dp-hero-actions">
-                <a href="{% url 'dataset' %}" class="dp-primary-link">
-                    Mulai menjelajahi <span>→</span>
-                </a>
-                <a href="#tentang" class="dp-text-link">
-                    Tentang platform
-                </a>
-            </div>
+<section class="welcome-dashboard">
+    <div class="welcome-content">
+        <div class="welcome-label">
+            Data Pendidikan Indonesia
         </div>
 
-        <!-- Visual data illustration -->
-        <div class="dp-hero-visual" aria-hidden="true">
-            <div class="dp-visual-circle">
-                <div class="dp-orbit-dot"></div>
+        <h1 class="welcome-title">
+            Selamat datang.<br>
+            Mari memahami pendidikan melalui <span>data.</span>
+        </h1>
 
-                <div class="dp-visual-center">
-                    <strong>DP</strong>
-                    <small>DATA</small>
-                </div>
-
-                <div class="dp-orbit-item dp-orbit-a">
-                    <strong>Data Pendidikan</strong>
-                    <small>Informasi &amp; pemahaman</small>
-                </div>
-
-                <div class="dp-orbit-item dp-orbit-b">
-                    <strong>2023 — 2026</strong>
-                    <small>Rentang tahun data</small>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- OVERVIEW -->
-    <section class="dp-intro-band">
-        <div class="dp-container dp-intro-grid">
-            <div class="dp-intro-item">
-                <strong>3 Periode</strong>
-                <p>Data tahun ajaran yang tersedia</p>
-            </div>
-
-            <div class="dp-intro-item">
-                <strong>SMA &amp; SMK</strong>
-                <p>Cakupan jenjang pendidikan</p>
-            </div>
-
-            <div class="dp-intro-item">
-                <strong>Data Terstruktur</strong>
-                <p>Informasi untuk eksplorasi dan analisis</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="dp-container dp-section dp-reveal" id="tentang">
-        <div class="dp-section-heading">
-            <div>
-                <div class="dp-eyebrow">01 — Tentang platform</div>
-                <h2>Data yang lebih mudah<br>dipahami.</h2>
-            </div>
-
-            <p>
-                Bukan sekadar menampilkan angka, tetapi membantu
-                pengguna menemukan informasi dan memahami perubahan
-                yang terjadi di dunia pendidikan.
-            </p>
-        </div>
-
-        <div class="dp-about-grid">
-            <div class="dp-about-text">
-                <p>
-                    Platform ini dikembangkan sebagai sarana untuk melihat
-                    data pendidikan dari berbagai periode. Pengguna dapat
-                    mempelajari informasi berdasarkan jenjang, melihat
-                    perbandingan, serta mengenali perubahan pada sejumlah
-                    indikator pendidikan.
-                </p>
-
-                <p>
-                    Data disajikan dalam bentuk tabel, visualisasi, dan
-                    analisis agar proses membaca informasi tidak harus
-                    dilakukan melalui kumpulan angka mentah.
-                </p>
-
-                <div class="dp-about-note">
-                    Tujuan utamanya adalah menjadikan data pendidikan
-                    lebih terbuka, mudah dipelajari, dan bermanfaat
-                    sebagai bahan pemahaman.
-                </div>
-            </div>
-
-            <div class="dp-data-panel">
-                <h3>Periode dataset yang tersedia</h3>
-
-                <div class="dp-period">
-                    <strong>2023/2024</strong>
-                    <span>Tersedia</span>
-                </div>
-
-                <div class="dp-period">
-                    <strong>2024/2025</strong>
-                    <span>Tersedia</span>
-                </div>
-
-                <div class="dp-period">
-                    <strong>2025/2026</strong>
-                    <span>Terbaru</span>
-                </div>
-
-                <p class="dp-data-caption">
-                    Dataset mencakup informasi pendidikan SMA dan SMK
-                    pada beberapa periode tahun ajaran, sehingga dapat
-                    digunakan untuk melihat perbandingan dan perubahan.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- INDICATORS -->
-    <section class="dp-indicators dp-reveal">
-        <div class="dp-container">
-            <div class="dp-section-heading">
-                <div>
-                    <div class="dp-eyebrow">02 — Cakupan informasi</div>
-                    <h2>Apa yang dapat<br>dipelajari dari data?</h2>
-                </div>
-
-                <p>
-                    Informasi pendidikan yang membantu melihat kondisi
-                    siswa, proses pendidikan, hingga hasil yang dicapai.
-                </p>
-            </div>
-
-            <div class="dp-indicator-grid">
-                <div class="dp-indicator">
-                    <span class="dp-indicator-number">01</span>
-                    <div>
-                        <h3>Peserta Didik</h3>
-                        <p>Informasi jumlah siswa dan perkembangan peserta didik.</p>
-                    </div>
-                </div>
-
-                <div class="dp-indicator">
-                    <span class="dp-indicator-number">02</span>
-                    <div>
-                        <h3>Peserta Didik Baru</h3>
-                        <p>Data siswa yang memasuki jenjang pendidikan pada periode tertentu.</p>
-                    </div>
-                </div>
-
-                <div class="dp-indicator">
-                    <span class="dp-indicator-number">03</span>
-                    <div>
-                        <h3>Kelulusan</h3>
-                        <p>Informasi jumlah peserta didik yang menyelesaikan pendidikan.</p>
-                    </div>
-                </div>
-
-                <div class="dp-indicator">
-                    <span class="dp-indicator-number">04</span>
-                    <div>
-                        <h3>Siswa Mengulang</h3>
-                        <p>Jumlah dan persentase peserta didik yang mengulang kelas.</p>
-                    </div>
-                </div>
-
-                <div class="dp-indicator">
-                    <span class="dp-indicator-number">05</span>
-                    <div>
-                        <h3>Putus Sekolah</h3>
-                        <p>Informasi jumlah dan persentase peserta didik yang putus sekolah.</p>
-                    </div>
-                </div>
-
-                <div class="dp-indicator">
-                    <span class="dp-indicator-number">06</span>
-                    <div>
-                        <h3>Perbandingan Periode</h3>
-                        <p>Melihat perubahan indikator dari satu tahun ajaran ke tahun lainnya.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="dp-container dp-feature-section dp-reveal">
-        <div class="dp-section-heading">
-            <div>
-                <div class="dp-eyebrow">03 — Fitur platform</div>
-                <h2>Kenali data.<br>Temukan informasi.</h2>
-            </div>
-
-            <p>
-                Setiap bagian memiliki fungsi berbeda untuk membantu
-                proses memahami data pendidikan.
-            </p>
-        </div>
-
-        <div class="dp-feature-grid">
-            <article class="dp-feature">
-                <span class="dp-feature-index">01 / EKSPLORASI</span>
-                <h3>Eksplorasi Data</h3>
-                <p>
-                    Melihat dataset secara langsung, menelusuri isi data,
-                    dan memahami informasi yang tersedia.
-                </p>
-                <a href="{% url 'dataset' %}">
-                    Buka eksplorasi <span>→</span>
-                </a>
-            </article>
-
-            <article class="dp-feature">
-                <span class="dp-feature-index">02 / ANALISIS</span>
-                <h3>Analisis Pendidikan</h3>
-                <p>
-                    Membandingkan indikator, membaca perubahan, dan
-                    mempelajari pola berdasarkan data pendidikan.
-                </p>
-                <a href="{% url 'analysis' %}">
-                    Buka analisis <span>→</span>
-                </a>
-            </article>
-
-            <article class="dp-feature">
-                <span class="dp-feature-index">03 / PREDIKSI</span>
-                <h3>Prediksi</h3>
-                <p>
-                    Melihat hasil estimasi berdasarkan data dan metode
-                    pemodelan yang digunakan oleh sistem.
-                </p>
-                <a href="{% url 'prediction' %}">
-                    Buka prediksi <span>→</span>
-                </a>
-            </article>
-        </div>
-    </section>
-
-    <!-- HOW TO USE -->
-    <section class="dp-container dp-guide dp-reveal">
-        <div class="dp-eyebrow">04 — Panduan singkat</div>
-        <h2 style="font-size:clamp(29px,4vw,43px);letter-spacing:-1.5px;margin-top:17px;">
-            Mulai dari mana?
-        </h2>
-
-        <div class="dp-guide-list">
-            <div class="dp-guide-row">
-                <span>01</span>
-                <h3>Kenali dataset</h3>
-                <p>Mulai dengan melihat data dan indikator yang tersedia.</p>
-            </div>
-
-            <div class="dp-guide-row">
-                <span>02</span>
-                <h3>Jelajahi informasi</h3>
-                <p>Gunakan eksplorasi untuk mencari informasi yang dibutuhkan.</p>
-            </div>
-
-            <div class="dp-guide-row">
-                <span>03</span>
-                <h3>Bandingkan dan pahami</h3>
-                <p>Gunakan analisis untuk membaca perubahan antarperiode.</p>
-            </div>
-
-            <div class="dp-guide-row">
-                <span>04</span>
-                <h3>Lihat estimasi</h3>
-                <p>Pelajari fitur prediksi sebagai gambaran berdasarkan data.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- CLOSING -->
-    <section class="dp-closing dp-reveal">
-        <div class="dp-container dp-closing-inner">
-            <div>
-                <h2>Mulai perjalanan<br>memahami data pendidikan.</h2>
-                <p>Jelajahi data, temukan pola, dan pelajari informasi yang tersedia.</p>
-            </div>
-
-            <a href="{% url 'dataset' %}" class="dp-closing-button">
-                Jelajahi dataset <span>↗</span>
-            </a>
-        </div>
-    </section>
-
-</div>
-
-<script>
-(function () {
-    const sections = document.querySelectorAll('.dp-reveal');
-
-    if (!('IntersectionObserver' in window)) {
-        sections.forEach(section => section.classList.add('dp-visible'));
-        return;
-    }
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('dp-visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.12
-    });
-
-    sections.forEach(section => observer.observe(section));
-})();
-</script>
+        <p class="welcome-description">
+            Selamat datang di Data Pendidikan. Platform ini hadir untuk membantu
+            Anda memahami kondisi pendidikan melalui informasi yang disajikan
+            secara sederhana, terstruktur, dan mudah dipelajari.
+        </p>
+    </div>
+</section>
 {% endblock %}
