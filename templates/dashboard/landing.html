@@ -4,9 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Pendidikan | Education Analytics</title>
+    <title>Data Pendidikan Indonesia</title>
 
     <style>
+        :root {
+            --bg: #f7f8f6;
+            --surface: #ffffff;
+            --text: #202b35;
+            --muted: #697783;
+            --line: #e3e8e9;
+            --blue: #285b78;
+            --blue-dark: #173e55;
+            --green: #597c69;
+            --soft-blue: #eaf1f4;
+            --soft-green: #edf2ee;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -18,661 +31,689 @@
         }
 
         body {
+            background: var(--bg);
+            color: var(--text);
             font-family: Inter, "Segoe UI", sans-serif;
-            background: #07111f;
-            color: #f1f5f9;
-            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        .background {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            overflow: hidden;
-            background:
-                radial-gradient(ellipse at 75% 20%, rgba(37, 99, 235, .18), transparent 40%),
-                radial-gradient(ellipse at 15% 80%, rgba(14, 165, 233, .10), transparent 40%),
-                #07111f;
+        a {
+            color: inherit;
         }
 
-        .orb {
-            position: absolute;
-            width: 450px;
-            height: 450px;
-            border-radius: 50%;
-            background: rgba(37, 99, 235, .10);
-            filter: blur(100px);
-            animation: float 9s ease-in-out infinite;
-        }
-
-        .orb.one {
-            top: -150px;
-            right: -100px;
-        }
-
-        .orb.two {
-            bottom: -200px;
-            left: -100px;
-            background: rgba(6, 182, 212, .08);
-            animation-delay: -4s;
-        }
-
-        .grid-bg {
-            position: absolute;
-            inset: 0;
-            opacity: .12;
-            background-image:
-                linear-gradient(rgba(100, 150, 255, .15) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(100, 150, 255, .15) 1px, transparent 1px);
-            background-size: 55px 55px;
-            mask-image: linear-gradient(to bottom, black, transparent 90%);
+        .container {
+            width: min(1120px, calc(100% - 48px));
+            margin: auto;
         }
 
         .navbar {
-            max-width: 1250px;
-            margin: auto;
-            padding: 28px 30px;
+            height: 78px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: fadeDown .8s ease both;
+            border-bottom: 1px solid var(--line);
         }
 
         .brand {
             display: flex;
             align-items: center;
             gap: 12px;
+            text-decoration: none;
         }
 
-        .brand-icon {
-            width: 42px;
-            height: 42px;
-            border-radius: 13px;
+        .brand-mark {
+            width: 36px;
+            height: 36px;
             display: grid;
             place-items: center;
+            background: var(--blue-dark);
             color: white;
-            font-size: 20px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #2563eb, #06b6d4);
-            box-shadow: 0 0 25px rgba(37, 99, 235, .35);
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 8px;
         }
 
         .brand-name {
+            font-size: 15px;
             font-weight: 700;
-            font-size: 17px;
-            letter-spacing: .3px;
+            letter-spacing: -.2px;
         }
 
-        .brand-sub {
-            font-size: 11px;
-            color: #8497b5;
-            margin-top: 3px;
-            letter-spacing: 1.5px;
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 28px;
         }
 
         .nav-link {
+            font-size: 13px;
+            color: var(--muted);
             text-decoration: none;
-            color: #a9bbd5;
-            font-size: 14px;
-            transition: .3s;
         }
 
         .nav-link:hover {
-            color: #60a5fa;
+            color: var(--blue);
         }
 
-        .nav-button {
+        .nav-cta {
             text-decoration: none;
-            padding: 11px 20px;
-            border-radius: 10px;
-            background: rgba(37, 99, 235, .12);
-            border: 1px solid rgba(96, 165, 250, .25);
-            color: #dbeafe;
+            background: var(--blue-dark);
+            color: white;
             font-size: 13px;
-            transition: .3s;
+            padding: 10px 17px;
+            border-radius: 6px;
+            transition: background .2s;
         }
 
-        .nav-button:hover {
-            background: #2563eb;
-            box-shadow: 0 0 25px rgba(37, 99, 235, .3);
-            transform: translateY(-2px);
+        .nav-cta:hover {
+            background: var(--blue);
         }
 
         .hero {
-            max-width: 1250px;
-            margin: auto;
-            padding: 105px 30px 70px;
+            padding: 90px 0 78px;
             display: grid;
-            grid-template-columns: 1.15fr .85fr;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 65px;
             align-items: center;
-            gap: 60px;
-            min-height: 650px;
         }
 
-        .hero-content {
-            animation: fadeUp 1s ease .2s both;
-        }
-
-        .badge {
-            display: inline-flex;
+        .eyebrow {
+            display: flex;
             align-items: center;
             gap: 9px;
-            border: 1px solid rgba(96, 165, 250, .25);
-            background: rgba(30, 64, 175, .12);
-            color: #93c5fd;
-            padding: 9px 15px;
-            border-radius: 50px;
-            font-size: 12px;
-            letter-spacing: .5px;
-            margin-bottom: 28px;
-        }
-
-        .dot {
-            width: 7px;
-            height: 7px;
-            background: #38bdf8;
-            border-radius: 50%;
-            box-shadow: 0 0 12px #38bdf8;
-        }
-
-        .hero h1 {
-            font-size: clamp(42px, 6vw, 76px);
-            line-height: 1.08;
-            letter-spacing: -3px;
-            font-weight: 800;
+            color: var(--green);
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            font-size: 11px;
+            font-weight: 700;
             margin-bottom: 24px;
         }
 
+        .eyebrow::before {
+            content: "";
+            width: 18px;
+            height: 1px;
+            background: var(--green);
+        }
+
+        .hero h1 {
+            max-width: 680px;
+            font-size: clamp(38px, 5.2vw, 66px);
+            font-weight: 700;
+            line-height: 1.12;
+            letter-spacing: -2.8px;
+        }
+
         .hero h1 span {
-            background: linear-gradient(90deg, #60a5fa, #22d3ee);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+            color: var(--blue);
         }
 
         .hero-description {
-            max-width: 570px;
-            color: #94a8c5;
-            font-size: 16px;
+            max-width: 590px;
+            margin-top: 25px;
+            font-size: 15px;
             line-height: 1.9;
+            color: var(--muted);
         }
 
         .hero-actions {
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 22px;
+            margin-top: 32px;
             flex-wrap: wrap;
-            margin-top: 35px;
         }
 
-        .primary-button {
+        .button-primary {
             display: inline-flex;
-            justify-content: center;
             align-items: center;
             gap: 12px;
-            padding: 15px 24px;
-            background: linear-gradient(135deg, #2563eb, #0891b2);
+            padding: 13px 19px;
+            border-radius: 6px;
+            background: var(--blue-dark);
             color: white;
             text-decoration: none;
-            border-radius: 12px;
+            font-size: 13px;
             font-weight: 600;
-            font-size: 14px;
-            box-shadow: 0 10px 35px rgba(37, 99, 235, .22);
-            transition: .3s;
+            transition: .2s;
         }
 
-        .primary-button:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 40px rgba(37, 99, 235, .4);
+        .button-primary:hover {
+            background: var(--blue);
+            transform: translateY(-1px);
         }
 
-        .secondary-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 15px 24px;
-            color: #cbd5e1;
+        .button-secondary {
+            color: var(--blue);
             text-decoration: none;
-            border: 1px solid rgba(148, 163, 184, .2);
-            border-radius: 12px;
-            font-size: 14px;
-            transition: .3s;
-        }
-
-        .secondary-button:hover {
-            border-color: #60a5fa;
-            background: rgba(59, 130, 246, .08);
-        }
-
-        .hero-visual {
-            position: relative;
-            height: 430px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: fadeUp 1s ease .5s both;
-        }
-
-        .visual-circle {
-            position: absolute;
-            width: 320px;
-            height: 320px;
-            border: 1px solid rgba(96, 165, 250, .15);
-            border-radius: 50%;
-            animation: rotate 35s linear infinite;
-        }
-
-        .visual-circle::before {
-            content: "";
-            position: absolute;
-            inset: 35px;
-            border: 1px dashed rgba(96, 165, 250, .2);
-            border-radius: 50%;
-        }
-
-        .visual-circle::after {
-            content: "";
-            position: absolute;
-            width: 9px;
-            height: 9px;
-            background: #38bdf8;
-            border-radius: 50%;
-            top: 30px;
-            left: 50%;
-            box-shadow: 0 0 20px #38bdf8;
-        }
-
-        .visual-core {
-            width: 190px;
-            height: 190px;
-            border-radius: 35px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(145deg, rgba(30, 64, 175, .35), rgba(8, 145, 178, .12));
-            border: 1px solid rgba(96, 165, 250, .3);
-            backdrop-filter: blur(15px);
-            box-shadow: 0 0 70px rgba(37, 99, 235, .15);
-            animation: float 5s ease-in-out infinite;
-        }
-
-        .core-icon {
-            font-size: 55px;
-            margin-bottom: 12px;
-        }
-
-        .core-text {
             font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: #bfdbfe;
+            font-weight: 600;
         }
 
-        .floating-card {
-            position: absolute;
-            padding: 16px 20px;
-            background: rgba(15, 29, 50, .8);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(96, 165, 250, .18);
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, .2);
-            animation: float 5s ease-in-out infinite;
+        .button-secondary:hover {
+            text-decoration: underline;
         }
 
-        .floating-card.top {
-            top: 35px;
-            right: 0;
+        .hero-side {
+            border-left: 1px solid var(--line);
+            padding-left: 34px;
         }
 
-        .floating-card.bottom {
-            bottom: 35px;
-            left: 0;
-            animation-delay: -2s;
-        }
-
-        .card-label {
+        .side-caption {
+            color: var(--muted);
             font-size: 11px;
-            color: #8298b8;
-            margin-bottom: 7px;
-        }
-
-        .card-value {
-            font-size: 23px;
-            font-weight: 700;
-            color: #e0f2fe;
-        }
-
-        .card-value small {
-            font-size: 11px;
-            font-weight: 400;
-            color: #60a5fa;
-        }
-
-        .stats {
-            max-width: 1190px;
-            margin: 0 auto 90px;
-            padding: 0 30px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            animation: fadeUp 1s ease .7s both;
-        }
-
-        .stat-card {
-            padding: 27px;
-            border-radius: 18px;
-            border: 1px solid rgba(148, 163, 184, .12);
-            background: rgba(15, 29, 50, .55);
-            backdrop-filter: blur(10px);
-            transition: .3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(96, 165, 250, .3);
-            background: rgba(30, 58, 95, .45);
-        }
-
-        .stat-number {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            color: #e0f2fe;
-        }
-
-        .stat-number span {
-            color: #38bdf8;
-        }
-
-        .stat-label {
-            color: #8296b5;
-            font-size: 13px;
-        }
-
-        .about-section {
-            max-width: 1190px;
-            margin: 0 auto;
-            padding: 0 30px 100px;
-            text-align: center;
-            animation: fadeUp 1s ease both;
-        }
-
-        .section-label {
-            color: #60a5fa;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            font-size: 11px;
+            letter-spacing: 1.4px;
             margin-bottom: 16px;
         }
 
-        .about-section h2 {
-            font-size: 35px;
-            margin-bottom: 20px;
+        .period-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .period-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 17px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .period-item:first-child {
+            border-top: 1px solid var(--line);
+        }
+
+        .period-year {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .period-tag {
+            font-size: 11px;
+            color: var(--green);
+            background: var(--soft-green);
+            padding: 5px 9px;
+            border-radius: 4px;
+        }
+
+        .side-note {
+            margin-top: 22px;
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--muted);
+        }
+
+        .overview {
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            padding: 30px 0;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .overview-item {
+            padding: 8px 28px;
+            border-right: 1px solid var(--line);
+        }
+
+        .overview-item:first-child {
+            padding-left: 0;
+        }
+
+        .overview-item:last-child {
+            border-right: none;
+        }
+
+        .overview-number {
+            font-size: 25px;
+            font-weight: 700;
+            color: var(--blue-dark);
+            letter-spacing: -.7px;
+        }
+
+        .overview-label {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .section {
+            padding: 88px 0;
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 30px;
+            margin-bottom: 35px;
+        }
+
+        .section-kicker {
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+            margin-bottom: 12px;
+        }
+
+        .section-heading h2 {
+            font-size: clamp(27px, 3vw, 38px);
+            letter-spacing: -1.2px;
+            line-height: 1.2;
+        }
+
+        .section-intro {
+            max-width: 410px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .dataset-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border: 1px solid var(--line);
+            background: var(--surface);
+        }
+
+        .dataset-card {
+            padding: 27px;
+            border-right: 1px solid var(--line);
+        }
+
+        .dataset-card:last-child {
+            border-right: none;
+        }
+
+        .dataset-year {
+            font-size: 23px;
+            font-weight: 700;
+            letter-spacing: -.7px;
+        }
+
+        .dataset-status {
+            margin-top: 8px;
+            color: var(--green);
+            font-size: 11px;
+        }
+
+        .dataset-description {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.8;
+            margin-top: 17px;
+        }
+
+        .dataset-levels {
+            display: flex;
+            gap: 8px;
+            margin-top: 21px;
+        }
+
+        .level {
+            background: var(--soft-blue);
+            color: var(--blue);
+            font-size: 11px;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        .data-section {
+            background: #eef2f1;
+            padding: 70px 0;
+        }
+
+        .data-content {
+            display: grid;
+            grid-template-columns: .8fr 1.2fr;
+            gap: 70px;
+            align-items: start;
+        }
+
+        .data-content h2 {
+            font-size: 33px;
+            line-height: 1.25;
+            letter-spacing: -1.2px;
+        }
+
+        .data-content p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.9;
+            margin-top: 18px;
+        }
+
+        .indicator-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0 28px;
+        }
+
+        .indicator {
+            padding: 17px 0;
+            border-bottom: 1px solid #d7dfdd;
+            display: flex;
+            gap: 13px;
+            align-items: center;
+        }
+
+        .indicator-number {
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .indicator-name {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .closing {
+            padding: 78px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 35px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .closing h2 {
+            font-size: 27px;
             letter-spacing: -1px;
         }
 
-        .about-section p {
-            max-width: 750px;
-            margin: auto;
-            line-height: 1.9;
-            color: #8ea3c0;
-            font-size: 15px;
+        .closing p {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 10px;
         }
 
         footer {
-            padding: 25px 30px;
-            text-align: center;
-            color: #64748b;
-            font-size: 12px;
-            border-top: 1px solid rgba(148, 163, 184, .1);
+            padding: 25px 0;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            color: var(--muted);
+            font-size: 11px;
         }
 
-        .reveal {
-            opacity: 0;
-            transform: translateY(25px);
-            transition: opacity .8s ease, transform .8s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-14px); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 900px) {
+        @media (max-width: 800px) {
             .hero {
                 grid-template-columns: 1fr;
-                text-align: center;
-                padding-top: 70px;
-                gap: 20px;
+                gap: 45px;
+                padding: 65px 0;
             }
 
-            .hero-description {
-                margin: auto;
+            .hero-side {
+                border-left: none;
+                padding-left: 0;
             }
 
-            .hero-actions {
-                justify-content: center;
+            .section-heading {
+                flex-direction: column;
+                align-items: start;
             }
 
-            .hero-visual {
-                height: 380px;
+            .data-content {
+                grid-template-columns: 1fr;
+                gap: 35px;
             }
 
-            .stats {
+            .dataset-grid {
                 grid-template-columns: 1fr;
             }
 
-            .floating-card.top {
-                right: 5%;
+            .dataset-card {
+                border-right: none;
+                border-bottom: 1px solid var(--line);
             }
 
-            .floating-card.bottom {
-                left: 5%;
+            .dataset-card:last-child {
+                border-bottom: none;
             }
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 560px) {
+            .container {
+                width: calc(100% - 36px);
+            }
+
             .navbar {
-                padding: 20px;
+                height: 70px;
             }
 
             .nav-link {
                 display: none;
             }
 
-            .hero {
-                padding: 65px 22px 40px;
-            }
-
             .hero h1 {
-                letter-spacing: -2px;
+                letter-spacing: -1.8px;
             }
 
-            .hero-visual {
-                height: 330px;
+            .overview-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
 
-            .visual-circle {
-                width: 260px;
-                height: 260px;
+            .overview-item,
+            .overview-item:first-child {
+                padding: 0;
+                border-right: none;
             }
 
-            .visual-core {
-                width: 155px;
-                height: 155px;
-                border-radius: 28px;
+            .indicator-list {
+                grid-template-columns: 1fr;
             }
 
-            .floating-card {
-                padding: 12px 15px;
+            .closing {
+                flex-direction: column;
+                align-items: start;
             }
 
-            .stats,
-            .about-section {
-                padding-left: 22px;
-                padding-right: 22px;
-            }
-
-            .about-section h2 {
-                font-size: 28px;
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: .01ms !important;
-                animation-iteration-count: 1 !important;
-                scroll-behavior: auto !important;
-                transition-duration: .01ms !important;
+            footer {
+                flex-direction: column;
             }
         }
     </style>
 </head>
+
 <body>
-
-<div class="background">
-    <div class="orb one"></div>
-    <div class="orb two"></div>
-    <div class="grid-bg"></div>
-</div>
-
-<nav class="navbar">
-    <div class="brand">
-        <div class="brand-icon">D</div>
-        <div>
-            <div class="brand-name">Data Pendidikan</div>
-            <div class="brand-sub">EDUCATION ANALYTICS</div>
-        </div>
-    </div>
-
-    <a href="#tentang" class="nav-link">Tentang Platform</a>
-
-    <a href="{% url 'home' %}" class="nav-button">
-        Masuk Dashboard ↗
-    </a>
-</nav>
-
-<section class="hero">
-    <div class="hero-content">
-        <div class="badge">
-            <span class="dot"></span>
-            EDUCATION DATA ANALYTICS PLATFORM
-        </div>
-
-        <h1>
-            Memahami Pendidikan.<br>
-            <span>Melihat Masa Depan.</span>
-        </h1>
-
-        <p class="hero-description">
-            Jelajahi data pendidikan Kabupaten Cirebon, pahami perkembangan
-            setiap kecamatan, dan temukan insight melalui analisis serta
-            prediksi berbasis data.
-        </p>
-
-        <div class="hero-actions">
-            <a href="{% url 'home' %}" class="primary-button">
-                Mulai Jelajahi <span>→</span>
+    <div class="container">
+        <header class="navbar">
+            <a href="{% url 'landing' %}" class="brand">
+                <div class="brand-mark">DP</div>
+                <span class="brand-name">Data Pendidikan</span>
             </a>
 
-            <a href="#tentang" class="secondary-button">
-                Tentang Sistem
-            </a>
-        </div>
+            <nav class="nav-right">
+                <a href="#dataset" class="nav-link">Dataset</a>
+                <a href="#indikator" class="nav-link">Indikator</a>
+                <a href="{% url 'home' %}" class="nav-cta">Buka Dashboard ↗</a>
+            </nav>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-main">
+                    <div class="eyebrow">Portal data pendidikan</div>
+
+                    <h1>Memahami pendidikan melalui <span>data.</span></h1>
+
+                    <p class="hero-description">
+                        Kumpulan data pendidikan untuk melihat perkembangan peserta didik,
+                        lulusan, serta berbagai indikator pendidikan pada jenjang SMA dan SMK.
+                        Data disusun lintas tahun agar lebih mudah dibaca, dibandingkan,
+                        dan digunakan sebagai dasar analisis.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a href="{% url 'home' %}" class="button-primary">
+                            Jelajahi Dashboard <span>→</span>
+                        </a>
+                        <a href="#dataset" class="button-secondary">Lihat dataset tersedia</a>
+                    </div>
+                </div>
+
+                <aside class="hero-side">
+                    <div class="side-caption">Periode data tersedia</div>
+
+                    <div class="period-list">
+                        <div class="period-item">
+                            <span class="period-year">2023/2024</span>
+                            <span class="period-tag">Tersedia</span>
+                        </div>
+                        <div class="period-item">
+                            <span class="period-year">2024/2025</span>
+                            <span class="period-tag">Tersedia</span>
+                        </div>
+                        <div class="period-item">
+                            <span class="period-year">2025/2026</span>
+                            <span class="period-tag">Terbaru</span>
+                        </div>
+                    </div>
+
+                    <p class="side-note">
+                        Dataset mencakup jenjang SMA dan SMK dengan sejumlah indikator
+                        yang dapat digunakan untuk melihat perubahan antarperiode.
+                    </p>
+                </aside>
+            </section>
+
+            <section class="overview">
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-number">3 Periode</div>
+                        <div class="overview-label">Tahun ajaran yang tersedia</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-number">SMA &amp; SMK</div>
+                        <div class="overview-label">Jenjang pendidikan yang dicakup</div>
+                    </div>
+                    <div class="overview-item">
+                        <div class="overview-number">8 Indikator</div>
+                        <div class="overview-label">Informasi utama pada dataset</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="dataset">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">Ketersediaan data</div>
+                        <h2>Dataset lintas tahun ajaran</h2>
+                    </div>
+                    <p class="section-intro">
+                        Data disediakan dalam tiga periode terbaru yang telah dihimpun
+                        untuk mendukung eksplorasi dan perbandingan kondisi pendidikan.
+                    </p>
+                </div>
+
+                <div class="dataset-grid">
+                    <article class="dataset-card">
+                        <div class="dataset-year">2023/2024</div>
+                        <div class="dataset-status">Dataset tersedia</div>
+                        <p class="dataset-description">
+                            Data pendidikan untuk periode awal pengamatan dalam kumpulan
+                            dataset terbaru.
+                        </p>
+                        <div class="dataset-levels">
+                            <span class="level">SMA</span>
+                            <span class="level">SMK</span>
+                        </div>
+                    </article>
+
+                    <article class="dataset-card">
+                        <div class="dataset-year">2024/2025</div>
+                        <div class="dataset-status">Dataset tersedia</div>
+                        <p class="dataset-description">
+                            Periode lanjutan untuk membantu melihat perubahan data
+                            pendidikan dari tahun sebelumnya.
+                        </p>
+                        <div class="dataset-levels">
+                            <span class="level">SMA</span>
+                            <span class="level">SMK</span>
+                        </div>
+                    </article>
+
+                    <article class="dataset-card">
+                        <div class="dataset-year">2025/2026</div>
+                        <div class="dataset-status">Periode terbaru</div>
+                        <p class="dataset-description">
+                            Data tahun ajaran terbaru dalam kumpulan dataset yang
+                            digunakan pada platform ini.
+                        </p>
+                        <div class="dataset-levels">
+                            <span class="level">SMA</span>
+                            <span class="level">SMK</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="data-section" id="indikator">
+                <div class="container data-content">
+                    <div>
+                        <div class="section-kicker">Isi dataset</div>
+                        <h2>Data yang dapat ditelusuri dan dianalisis</h2>
+                        <p>
+                            Setiap periode memuat informasi utama yang membantu
+                            menggambarkan kondisi pendidikan. Data dapat menjadi
+                            bahan untuk membaca pola, melihat perbedaan, dan
+                            membangun analisis lebih lanjut.
+                        </p>
+                    </div>
+
+                    <div class="indicator-list">
+                        <div class="indicator">
+                            <span class="indicator-number">01</span>
+                            <span class="indicator-name">Peserta Didik Baru</span>
+                        </div>
+                        <div class="indicator">
+                            <span class="indicator-number">02</span>
+                            <span class="indicator-name">Jumlah Peserta Didik</span>
+                        </div>
+                        <div class="indicator">
+                            <span class="indicator-number">03</span>
+                            <span class="indicator-name">Jumlah Lulusan</span>
+                        </div>
+                        <div class="indicator">
+                            <span class="indicator-number">04</span>
+                            <span class="indicator-name">Peserta Didik Mengulang</span>
+                        </div>
+                        <div class="indicator">
+                            <span class="indicator-number">05</span>
+                            <span class="indicator-name">Persentase Mengulang</span>
+                        </div>
+                        <div class="indicator">
+                            <span class="indicator-number">06</span>
+                            <span class="indicator-name">Jumlah Putus Sekolah</span>
+                        </div>
+                        <div class="indicator">
+                            <span class="indicator-number">07</span>
+                            <span class="indicator-name">Persentase Putus Sekolah</span>
+                        </div>
+            </div>
+        </section>
+
+        <section class="closing">
+            <div>
+                <h2>Mulai dari data, temukan insight.</h2>
+                <p>Jelajahi data pendidikan dan lihat informasi dalam bentuk yang lebih mudah dipahami.</p>
+            </div>
+            <a href="{% url 'home' %}" class="button-primary">Masuk Dashboard →</a>
+        </section>
+        </main>
+
+        <footer>
+            <span>Data Pendidikan · Portal eksplorasi dan analisis pendidikan</span>
+            <span>Dataset tahun ajaran 2023/2024 — 2025/2026</span>
+        </footer>
     </div>
-
-    <div class="hero-visual">
-        <div class="visual-circle"></div>
-
-        <div class="visual-core">
-            <div class="core-icon">📊</div>
-            <div class="core-text">EDUCATION DATA</div>
-        </div>
-
-        <div class="floating-card top">
-            <div class="card-label">Wilayah Analisis</div>
-            <div class="card-value">40 <small>Kecamatan</small></div>
-        </div>
-
-        <div class="floating-card bottom">
-            <div class="card-label">Periode Dataset</div>
-            <div class="card-value">2024—2025</div>
-        </div>
-    </div>
-</section>
-
-<section class="stats reveal">
-    <div class="stat-card">
-        <div class="stat-number"><span>40</span></div>
-        <div class="stat-label">Kecamatan Kabupaten Cirebon</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-number"><span>9</span></div>
-        <div class="stat-label">Indikator Pendidikan</div>
-    </div>
-
-    <div class="stat-card">
-        <div class="stat-number"><span>3</span></div>
-        <div class="stat-label">Jenjang SMA, MA, dan SMK</div>
-    </div>
-</section>
-
-<section class="about-section reveal" id="tentang">
-    <div class="section-label">Tentang Platform</div>
-
-    <h2>Data untuk memahami pendidikan.</h2>
-
-    <p>
-        Data Pendidikan merupakan platform yang dirancang untuk mengeksplorasi,
-        menganalisis, memvisualisasikan, dan melakukan prediksi terhadap
-        indikator pendidikan di Kabupaten Cirebon. Melalui data, kita dapat
-        melihat gambaran kondisi pendidikan, memahami perubahan yang terjadi,
-        serta menjadikan informasi sebagai dasar untuk analisis yang lebih baik.
-    </p>
-</section>
-
-<footer>
-    Data Pendidikan &mdash; Education Analytics Platform
-    <br>
-    Kabupaten Cirebon | 2024–2025
-</footer>
-
-<script>
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        threshold: 0.15
-    });
-
-    document.querySelectorAll('.reveal').forEach(element => {
-        observer.observe(element);
-    });
-</script>
-
 </body>
 </html>
