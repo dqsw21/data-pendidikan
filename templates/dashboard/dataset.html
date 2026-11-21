@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load number_format %}
 
 {% block title %}Eksplorasi Data | Data Pendidikan{% endblock %}
 
@@ -304,12 +305,12 @@
                         <td class="ds-province">{{ item.provinsi }}</td>
                         <td class="ds-year">{{ item.tahun_ajar }}</td>
                         <td><span class="ds-level">{{ item.jenjang }}</span></td>
-                        <td class="ds-number">{{ item.peserta_didik_baru }}</td>
-                        <td class="ds-number">{{ item.jumlah_peserta_didik }}</td>
-                        <td class="ds-number">{{ item.lulusan }}</td>
-                        <td class="ds-number">{{ item.mengulang_jumlah }}</td>
+                        <td class="ds-number">{{ item.peserta_didik_baru|format_indonesia }}</td>
+                        <td class="ds-number">{{ item.jumlah_peserta_didik|format_indonesia }}</td>
+                        <td class="ds-number">{{ item.lulusan|format_indonesia }}</td>
+                        <td class="ds-number">{{ item.mengulang_jumlah|format_indonesia }}</td>
                         <td class="ds-number">{{ item.mengulang_persentase|floatformat:2 }}</td>
-                        <td class="ds-number">{{ item.putus_jumlah }}</td>
+                        <td class="ds-number">{{ item.putus_jumlah|format_indonesia }}</td>
                         <td class="ds-number">{{ item.putus_persentase|floatformat:2 }}</td>
                     </tr>
                     {% empty %}
