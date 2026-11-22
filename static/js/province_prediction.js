@@ -177,3 +177,102 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+// === PROVINCE CHART AI EXPLANATIONS ===
+document.addEventListener("DOMContentLoaded", function () {
+    const chartDataElement = document.getElementById("prediction-chart-data");
+
+    if (!chartDataElement) return;
+
+    const form = document.querySelector('form[method="POST"]');
+    if (!form) return;
+
+    const provinceSelect = form.querySelector('[name="provinsi"]');
+    const yearSelect = form.querySelector('[name="tahun_ajar"]');
+
+    if (!provinceSelect || !yearSelect) return;
+
+    const province = provinceSelect.value;
+    const selectedYear = yearSelect.value;
+
+    const aiConfigs = [
+        { key: "SMA_lulusan", id: "aiSmaLulusan" },
+        { key: "SMA_mengulang", id: "aiSmaMengulang" },
+        { key: "SMA_putus", id: "aiSmaPutus" },
+        { key: "SMK_lulusan", id: "aiSmkLulusan" },
+        { key: "SMK_mengulang", id: "aiSmkMengulang" },
+        { key: "SMK_putus", id: "aiSmkPutus" },
+    ];
+
+    function getCookie(name) {
+        const cookies = document.cookie ? document.cookie.split(";") : [];
+
+        for (const cookie of cookies) {
+            const trimmed = cookie.trim();
+
+            if (trimmed.startsWith(name + "=")) {
+                return decodeURIComponent(trimmed.substring(name.length + 1));
+            }
+        }
+
+        return null;
+    }
+
+    aiConfigs.forEach(function (config) {
+        const container = document.getElementById(config.id);
+        if (!container) return;
+
+        container.innerHTML = '<div class="ai-explanation-loading">AI sedang menganalisis data grafik...</div>';
+
+        fetch("/province-chart-ai/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify({
+                province: province,
+                selected_year: selectedYear,
+                series_key: config.key
+            })
+        })
+        .then(function (response) {
+            return response.json().then(function (result) {
+                if (!response.ok) {
+                    throw new Error(result.error || "Analisis AI gagal.");
+                }
+                return result;
+            });
+        })
+        .then(function (result) {
+            container.innerHTML = "";
+
+            const heading = document.createElement("div");
+            heading.className = "ai-explanation-heading";
+            heading.textContent = "Analisis AI Gemini";
+
+            const paragraph = document.createElement("p");
+            paragraph.className = "ai-explanation-text";
+            paragraph.textContent = result.explanation;
+
+            const meta = document.createElement("small");
+            meta.className = "ai-explanation-meta";
+            meta.textContent = result.cached
+                ? "Hasil tersimpan · " + (result.model || "Gemini")
+                : (result.model || "Gemini") + " · " + (result.elapsed || 0) + " detik";
+
+            container.appendChild(heading);
+            container.appendChild(paragraph);
+            container.appendChild(meta);
+        })
+        .catch(function (error) {
+            container.innerHTML = "";
+
+            const message = document.createElement("p");
+            message.className = "ai-explanation-error";
+            message.textContent = error.message || "Analisis AI tidak dapat dimuat.";
+
+            container.appendChild(message);
+        });
+    });
+});

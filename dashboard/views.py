@@ -321,3 +321,143 @@ def prediction_ai_explanation(request):
             "success": False,
             "error": "Terjadi kesalahan saat memproses analisis AI prediksi.",
         }, status=500)
+
+@require_POST
+def province_chart_ai(request):
+    import hashlib
+    import json
+
+    from django.core.cache import cache
+    from dashboard.dataset_processor import load_new_dataset
+    from dashboard.province_predictor import get_province_history
+    from dashboard.ai_interpreter import ai_interpreter
+    from dashboard.ai_service import AIServiceError
+
+    try:
+        payload = json.loads(request.body)
+
+        province = payload.get("province", "").strip()
+        selected_year = payload.get("selected_year", "").strip()
+        series_key = payload.get("series_key", "").strip()
+
+        allowed_series = {
+            "SMA_lulusan",
+            "SMA_mengulang",
+            "SMA_putus",
+            "SMK_lulusan",
+            "SMK_mengulang",
+            "SMK_putus",
+        }
+
+        if series_key not in allowed_series:
+            return JsonResponse({
+                "success": False,
+                "error": "Indikator grafik tidak valid.",
+            }, status=400)
+
+        df = load_new_dataset()
+
+        provinces = df["provinsi"].dropna().unique().tolist()
+
+        actual_years = sorted(
+            df["tahun_ajar"].dropna().unique().tolist(),
+            key=lambda year: int(year[:4])
+        )
+
+        available_years = actual_years + [
+            "2026/2027",
+            "2027/2028",
+            "2028/2029",
+            "2029/2030",
+        ]
+
+        if province not in provinces:
+            return JsonResponse({
+                "success": False,
+                "error": "Provinsi tidak valid.",
+            }, status=400)
+
+        if selected_year not in available_years:
+            return JsonResponse({
+                "success": False,
+                "error": "Tahun ajar tidak valid.",
+            }, status=400)
+
+        chart_data = get_province_history(
+            province=province,
+            selected_school_year=selected_year,
+        )
+
+        series = chart_data.get("series", {}).get(series_key)
+
+        if not series:
+            return JsonResponse({
+                "success": False,
+                "error": "Data grafik tidak ditemukan.",
+            }, status=404)
+
+        cache_context = {
+            "province": province,
+            "year": selected_year,
+            "series_key": series_key,
+            "labels": chart_data.get("labels", []),
+            "series": series,
+        }
+
+        fingerprint = hashlib.sha256(
+            json.dumps(
+                cache_context,
+                sort_keys=True,
+                ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
+
+        cache_key = f"province_chart_ai_{fingerprint}"
+
+        cached_result = cache.get(cache_key)
+
+        if cached_result:
+            return JsonResponse({
+                **cached_result,
+                "cached": True,
+            })
+
+        result = ai_interpreter.explain_province_chart(
+            province=province,
+            selected_year=selected_year,
+            series_key=series_key,
+            chart_data=chart_data,
+        )
+
+        response_data = {
+            "success": True,
+            "province": province,
+            "selected_year": selected_year,
+            "series_key": series_key,
+            "explanation": result["explanation"],
+            "model": result["model"],
+            "elapsed": result["elapsed"],
+            "cached": False,
+        }
+
+        cache.set(cache_key, response_data, timeout=86400)
+
+        return JsonResponse(response_data)
+
+    except AIServiceError:
+        return JsonResponse({
+            "success": False,
+            "error": "AI sedang tidak dapat memberikan analisis. Silakan coba kembali.",
+        }, status=503)
+
+    except (ValueError, TypeError, KeyError, IndexError):
+        return JsonResponse({
+            "success": False,
+            "error": "Data permintaan tidak valid.",
+        }, status=400)
+
+    except Exception:
+        return JsonResponse({
+            "success": False,
+            "error": "Terjadi kesalahan saat memproses analisis AI.",
+        }, status=500)

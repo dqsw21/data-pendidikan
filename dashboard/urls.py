@@ -20,3 +20,7 @@ urlpatterns += [
 urlpatterns += [
     path('prediction-ai/', views.prediction_ai_explanation, name='prediction_ai'),
 ]
+
+urlpatterns += [
+    path('province-chart-ai/', views.province_chart_ai, name='province_chart_ai'),
+]

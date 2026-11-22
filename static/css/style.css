@@ -2015,3 +2015,92 @@ button:hover,
         padding: 14px;
     }
 }
+
+/* ===== AI EXPLANATION FOR PROVINCE CHARTS ===== */
+.ai-chart-explanation {
+    margin-top: 20px;
+    padding: 18px 20px;
+    border: 1px solid #e2eaf7;
+    border-radius: 12px;
+    background: #f8faff;
+}
+
+.ai-explanation-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: #2563eb;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.ai-explanation-heading::before {
+    content: "✦";
+    font-size: 15px;
+}
+
+.ai-explanation-text {
+    margin: 0;
+    color: #334155;
+    font-size: 13px;
+    line-height: 1.85;
+    text-align: justify;
+}
+
+.ai-explanation-meta {
+    display: block;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #e5ecf8;
+    color: #94a3b8;
+    font-size: 11px;
+}
+
+.ai-explanation-loading {
+    padding: 12px 14px;
+    color: #2563eb;
+    font-size: 13px;
+    background: #eef4ff;
+    border-radius: 8px;
+    animation: aiLoadingPulse 1.5s ease-in-out infinite;
+}
+
+.ai-explanation-error {
+    margin: 0;
+    padding: 12px 14px;
+    color: #b42318;
+    font-size: 13px;
+    line-height: 1.6;
+    background: #fff5f5;
+    border: 1px solid #f3d5d5;
+    border-radius: 8px;
+}
+
+@keyframes aiLoadingPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
+}
+
+@media (max-width: 768px) {
+    .ai-chart-explanation {
+        padding: 15px;
+        margin-top: 16px;
+    }
+
+    .ai-explanation-text {
+        font-size: 12px;
+        text-align: left;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ai-explanation-loading {
+        animation: none;
+    }
+}

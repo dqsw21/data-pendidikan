@@ -139,4 +139,55 @@ BALAS HANYA DENGAN JSON VALID:
 
 
 
+
+    @staticmethod
+    def explain_province_chart(province, selected_year, series_key, chart_data):
+        series = chart_data.get("series", {}).get(series_key)
+
+        if not series:
+            raise ValueError("Data grafik tidak ditemukan.")
+
+        context = {
+            "provinsi": province,
+            "tahun_prediksi": selected_year,
+            "jenjang": series.get("level"),
+            "indikator": series.get("metric"),
+            "tahun": chart_data.get("labels", []),
+            "aktual": series.get("actual_count", []),
+            "aktual_persen": series.get("actual_percent", []),
+            "prediksi": series.get("forecast_count", []),
+            "prediksi_persen": series.get("forecast_percent", []),
+        }
+
+        prompt = f"""
+Analisis grafik pendidikan berikut.
+
+DATA:
+{json.dumps(context, ensure_ascii=False)}
+
+ATURAN:
+- Gunakan bahasa Indonesia sederhana.
+- Analisis hanya data yang tersedia.
+- Jangan mengarang angka atau penyebab.
+- Bedakan data aktual dengan prediksi.
+- Jelaskan tren naik, turun, stabil, atau berubah-ubah.
+- Jelaskan perubahan jumlah dan persentase jika relevan.
+- Sebutkan provinsi, jenjang, dan indikator.
+- Jangan menyimpulkan penyebab perubahan.
+- Buat satu paragraf ringkas tetapi informatif.
+- Jangan gunakan Markdown.
+
+Berikan hanya paragraf analisis.
+"""
+
+        result = gemini_service.generate(prompt)
+
+        return {
+            "success": True,
+            "explanation": result["text"].strip(),
+            "model": result["model"],
+            "elapsed": result["elapsed"],
+        }
+
+
 ai_interpreter = AIDataInterpreter()
