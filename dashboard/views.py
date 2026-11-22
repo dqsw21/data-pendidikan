@@ -6,19 +6,20 @@ from .data_processor import load_dataset, get_chart_data
 
 
 def home(request):
-    df = load_dataset()
+    from dashboard.dataset_processor import load_new_dataset
+
+    df = load_new_dataset()
 
     statistics = {
         "total_data": len(df),
-        "total_kecamatan": df["bps_nama_kecamatan"].nunique(),
-        "tahun_awal": int(df["tahun"].min()),
-        "tahun_akhir": int(df["tahun"].max()),
-        "total_jenjang": 3,
+        "total_kecamatan": df["provinsi"].replace({"Bangka Belitung": "Kep. Bangka Belitung"}).nunique() if not df.empty else 0,
+        "tahun_awal": "2023/2024",
+        "tahun_akhir": "2025/2026",
+        "total_jenjang": df["jenjang"].nunique() if not df.empty else 0,
     }
 
     context = {
         "statistics": statistics,
-        "chart_data": get_chart_data(),
         "active_page": "home",
     }
 
@@ -67,129 +68,66 @@ def dataset_explorer(request):
 
 
 def prediction_page(request):
-    from dashboard.predictor import (
-        get_prediction_options,
-        predict_education,
-        INDICATORS,
+    from dashboard.dataset_processor import load_new_dataset
+    from dashboard.province_predictor import get_province_history
+
+    df = load_new_dataset()
+
+    provinces = sorted(
+        df["provinsi"].dropna().unique().tolist()
     )
 
-    options = get_prediction_options()
+    actual_years = sorted(
+        df["tahun_ajar"].dropna().unique().tolist(),
+        key=lambda year: int(year[:4])
+    )
 
-    district = request.POST.get(
-        "kecamatan",
+    forecast_years = [
+        "2026/2027",
+        "2027/2028",
+        "2028/2029",
+        "2029/2030",
+    ]
+
+    available_years = actual_years + forecast_years
+
+    selected_province = request.POST.get(
+        "provinsi",
+        request.GET.get("provinsi", provinces[0] if provinces else "")
+    )
+
+    selected_school_year = request.POST.get(
+        "tahun_ajar",
         request.GET.get(
-            "kecamatan",
-            options["districts"][0] if options["districts"] else ""
+            "tahun_ajar",
+            "2029/2030" if available_years else ""
         )
     )
 
-    year_input = request.POST.get(
-        "tahun",
-        request.GET.get(
-            "tahun",
-            str(options["default_prediction_year"])
-        )
-    )
-
-    result = None
+    chart_data = {"labels": [], "series": {}}
     error = None
-    chart_data = {}
 
     try:
-        prediction_year = int(year_input)
+        if selected_province not in provinces:
+            raise ValueError("Provinsi yang dipilih tidak valid.")
 
-        result = predict_education(
-            district=district,
-            prediction_year=prediction_year
+        if selected_school_year not in available_years:
+            raise ValueError("Tahun ajar yang dipilih tidak tersedia.")
+
+        chart_data = get_province_history(
+            province=selected_province,
+            selected_school_year=selected_school_year,
         )
-
-        df = load_dataset()
-
-        district_data = df[
-            df["bps_nama_kecamatan"] == district
-        ].sort_values("tahun")
-
-        actual_years = sorted(
-            district_data["tahun"].dropna().astype(int).unique().tolist()
-        )
-
-        forecast_years = [2026, 2027, 2028]
-        chart_years = actual_years + forecast_years
-
-        chart_data = {
-            "labels": chart_years,
-            "mengulang": [],
-            "putus_sekolah": [],
-            "lulusan": [],
-        }
-
-        category_keys = {
-            "Mengulang": "mengulang",
-            "Putus Sekolah": "putus_sekolah",
-            "Lulusan": "lulusan",
-        }
-
-        colors = {
-            "SMA": "#2563eb",
-            "MA": "#0d9488",
-            "SMK": "#f59e0b",
-        }
-
-        for column, config in INDICATORS.items():
-            category = category_keys[config["category"]]
-
-            actual_values = []
-
-            for year in actual_years:
-                year_rows = district_data[
-                    district_data["tahun"] == year
-                ]
-
-                value = (
-                    float(year_rows.iloc[-1][column])
-                    if not year_rows.empty
-                    else None
-                )
-
-                actual_values.append(value)
-
-            forecast_values = []
-
-            for year in forecast_years:
-                forecast_result = predict_education(
-                    district=district,
-                    prediction_year=year
-                )
-
-                prediction_item = next(
-                    item for item in forecast_result["predictions"]
-                    if item["column"] == column
-                )
-
-                forecast_values.append(
-                    prediction_item["predicted_value"]
-                )
-
-            chart_data[category].append({
-                "label": config["level"],
-                "color": colors[config["level"]],
-                "actual": actual_values + [None] * len(forecast_years),
-                "forecast": (
-                    [None] * len(actual_years)
-                    + forecast_values
-                ),
-            })
 
     except (ValueError, TypeError, KeyError, IndexError) as exc:
         error = str(exc)
 
     context = {
         "active_page": "prediction",
-        "districts": options["districts"],
-        "selected_district": district,
-        "latest_year": options["latest_year"],
-        "prediction_year": year_input,
-        "result": result,
+        "provinces": provinces,
+        "available_years": available_years,
+        "selected_province": selected_province,
+        "selected_school_year": selected_school_year,
         "chart_data": chart_data,
         "error": error,
     }

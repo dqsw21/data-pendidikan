@@ -2,592 +2,271 @@
 {% load static %}
 
 {% block content %}
+<style>
+.prediction-method-note {
+    margin: 15px 0 22px;
+    padding: 20px;
+    border: 1px solid #e4eaf3;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #f8faff, #ffffff 72%);
+    color: #34445f;
+}
+.prediction-method-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.prediction-method-mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    flex: 0 0 34px;
+    border-radius: 10px;
+    background: #eaf1ff;
+    color: #3569e8;
+    font-weight: 800;
+}
+.prediction-method-heading strong {
+    display: block;
+    font-size: 14px;
+    color: #203451;
+}
+.prediction-method-heading div span {
+    display: block;
+    margin-top: 3px;
+    font-size: 11px;
+    color: #8795aa;
+}
+.prediction-method-note > p {
+    margin: 15px 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #718198;
+}
+.prediction-method-steps {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+.prediction-method-steps > div {
+    padding: 14px;
+    background: #fff;
+    border: 1px solid #e8edf5;
+    border-radius: 11px;
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+.prediction-method-steps > div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(30, 55, 95, .06);
+}
+.prediction-method-number {
+    display: block;
+    margin-bottom: 9px;
+    color: #4776d8;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+.prediction-method-steps strong {
+    display: block;
+    font-size: 12px;
+    color: #31435f;
+}
+.prediction-method-steps p {
+    margin: 6px 0 0;
+    color: #8290a5;
+    font-size: 11px;
+    line-height: 1.7;
+}
+.prediction-method-foot {
+    margin-top: 13px;
+    padding-top: 12px;
+    border-top: 1px solid #e8edf5;
+    font-size: 11px;
+    line-height: 1.7;
+    color: #8794a8;
+}
+@media (max-width: 700px) {
+    .prediction-method-steps {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
-
-<div class="prediction-page">
+<div class="prediction-page prediction-v2">
 
     <div class="page-header">
-        <h1>Prediksi</h1>
-        <p>
-            Melihat perkiraan perkembangan indikator pendidikan berdasarkan
-            data tahun sebelumnya dan hasil perhitungan sistem.
-        </p>
+        <h1>Prediksi Pendidikan</h1>
+        <p>Perkiraan perkembangan indikator pendidikan berdasarkan provinsi dan tahun ajaran.</p>
     </div>
 
-    <div class="card">
-        <h2>Cara Kerja Sistem Prediksi</h2>
-        <p>
-            Sistem menggunakan data pendidikan tahun sebelumnya sebagai dasar
-            perhitungan. Prediksi tahun berikutnya dihitung berdasarkan hasil
-            prediksi tahun sebelumnya, sehingga setiap tahun memiliki hubungan
-            dengan periode sebelumnya.
-        </p>
-        <p>
-            Indikator angka mengulang dan putus sekolah juga digunakan sebagai
-            pertimbangan dalam perhitungan indikator lulusan. Hasil yang
-            ditampilkan merupakan estimasi matematis dan bukan nilai pasti
-            yang akan terjadi.
-        </p>
-    </div>
+    <section class="card prediction-filter-card">
+        <h2>Parameter Prediksi</h2>
 
-    <div class="card">
-        <h2>Pilih Data Prediksi</h2>
+        <div class="prediction-method-note">
+            <div class="prediction-method-heading">
+                <span class="prediction-method-mark">i</span>
+                <div>
+                    <strong>Bagaimana prediksi dihitung?</strong>
+                    <span>Ringkasan metode perhitungan</span>
+                </div>
+            </div>
+
+            <p>
+                Sistem menggunakan data pendidikan tahun sebelumnya sebagai dasar
+                untuk memperkirakan nilai pada tahun berikutnya.
+            </p>
+
+            <div class="prediction-method-steps">
+                <div>
+                    <span class="prediction-method-number">01</span>
+                    <strong>Tren perubahan</strong>
+                    <p>Mengukur kenaikan atau penurunan nilai pada periode sebelumnya.</p>
+                </div>
+                <div>
+                    <span class="prediction-method-number">02</span>
+                    <strong>Akselerasi</strong>
+                    <p>Melihat apakah perubahan tren semakin kuat atau mulai melambat.</p>
+                </div>
+                <div>
+                    <span class="prediction-method-number">03</span>
+                    <strong>Fluktuasi</strong>
+                    <p>Menambahkan variasi terkontrol agar hasil proyeksi tidak bergerak secara monoton.</p>
+                </div>
+            </div>
+
+            <div class="prediction-method-foot">
+                Hasil prediksi merupakan estimasi matematis berdasarkan pola data historis,
+                bukan nilai pasti yang akan terjadi.
+            </div>
+        </div>
 
         <form method="POST">
             {% csrf_token %}
 
-            <div class="form-group">
-                <label for="kecamatan">Kecamatan</label>
-                <select name="kecamatan" id="kecamatan" class="form-control">
-                    {% for district in districts %}
-                        <option value="{{ district }}"
-                            {% if district == selected_district %}selected{% endif %}>
-                            {{ district }}
+            <div class="prediction-filter-grid">
+                <div class="form-group">
+                    <label for="provinsi">Provinsi</label>
+                    <select class="form-control" id="provinsi" name="provinsi">
+                        {% for province in provinces %}
+                        <option value="{{ province }}" {% if province == selected_province %}selected{% endif %}>
+                            {{ province }}
                         </option>
-                    {% endfor %}
-                </select>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="tahun_ajar">Tahun Ajar</label>
+                    <select class="form-control" id="tahun_ajar" name="tahun_ajar" required>
+                        {% for year in available_years %}
+                        <option value="{{ year }}" {% if year == selected_school_year %}selected{% endif %}>
+                            {{ year }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="tahun">Tahun Prediksi</label>
-                <select name="tahun" id="tahun" class="form-control">
-                    <option value="2026" {% if prediction_year|stringformat:"s" == "2026" %}selected{% endif %}>2026</option>
-                    <option value="2027" {% if prediction_year|stringformat:"s" == "2027" %}selected{% endif %}>2027</option>
-                    <option value="2028" {% if prediction_year|stringformat:"s" == "2028" %}selected{% endif %}>2028</option>
-                </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-                Tampilkan Prediksi
-            </button>
+            <button class="btn btn-primary" type="submit">Tampilkan Prediksi</button>
         </form>
-    </div>
+    </section>
 
     {% if error %}
-        <div class="card">
-            <p>{{ error }}</p>
-        </div>
+    <div class="card prediction-error">
+        {{ error }}
+    </div>
     {% endif %}
 
-    {% if result %}
-        <div class="page-header">
-            <h2>{{ result.district }} — Tahun {{ result.prediction_year }}</h2>
-            <p>Ringkasan hasil prediksi dan perkembangan indikator pendidikan.</p>
+    {% if chart_data.series %}
+    <div class="prediction-result-heading">
+        <h2>{{ selected_province }} · Analisis & Prediksi Pendidikan</h2>
+        <p>
+            Menampilkan data aktual dan prediksi perkembangan indikator pendidikan dari tahun ajar
+            {{ chart_data.labels|first }} hingga {{ chart_data.labels|last }}.
+            Prediksi dihitung menggunakan rata-rata perubahan tahunan dari data historis.
+        </p>
+    </div>
+
+    <div class="prediction-chart-legend">
+        <span><i class="legend-line legend-actual"></i> Data Aktual</span>
+        <span><i class="legend-line legend-forecast"></i> Data Prediksi</span>
+        <p>Prediksi menggunakan rata-rata perubahan tahunan dari data historis.</p>
+    </div>
+
+    {{ chart_data|json_script:"prediction-chart-data" }}
+
+    <section class="prediction-level-section">
+        <header>
+            <h2>SMA</h2>
+            <p>Indikator pendidikan Sekolah Menengah Atas.</p>
+        </header>
+
+        <div class="prediction-graphs-grid">
+            <article class="prediction-graph-card">
+                <h3>Angka Lulusan</h3>
+                <div class="prediction-chart-container">
+                    <canvas id="chartSmaLulusan"></canvas>
+                </div>
+            </article>
+
+            <article class="prediction-graph-card">
+                <h3>Angka Mengulang</h3>
+                <div class="prediction-chart-container">
+                    <canvas id="chartSmaMengulang"></canvas>
+                </div>
+            </article>
+
+            <article class="prediction-graph-card">
+                <h3>Angka Putus Sekolah</h3>
+                <div class="prediction-chart-container">
+                    <canvas id="chartSmaPutus"></canvas>
+                </div>
+            </article>
+
+            
+
+            
         </div>
+    </section>
 
-        <div class="prediction-overview">
-            <div class="prediction-overview-card">
-                <div class="label">Kecamatan</div>
-                <div class="value">{{ result.district }}</div>
-            </div>
+    <section class="prediction-level-section prediction-smk">
+        <header>
+            <h2>SMK</h2>
+            <p>Indikator pendidikan Sekolah Menengah Kejuruan.</p>
+        </header>
 
-            <div class="prediction-overview-card">
-                <div class="label">Periode Analisis</div>
-                <div class="value">2024–{{ result.prediction_year }}</div>
-            </div>
+        <div class="prediction-graphs-grid">
+            <article class="prediction-graph-card">
+                <h3>Angka Lulusan</h3>
+                <div class="prediction-chart-container">
+                    <canvas id="chartSmkLulusan"></canvas>
+                </div>
+            </article>
 
-            <div class="prediction-overview-card">
-                <div class="label">Tahun Prediksi</div>
-                <div class="value">{{ result.prediction_year }}</div>
-            </div>
+            <article class="prediction-graph-card">
+                <h3>Angka Mengulang</h3>
+                <div class="prediction-chart-container">
+                    <canvas id="chartSmkMengulang"></canvas>
+                </div>
+            </article>
+
+            <article class="prediction-graph-card">
+                <h3>Angka Putus Sekolah</h3>
+                <div class="prediction-chart-container">
+                    <canvas id="chartSmkPutus"></canvas>
+                </div>
+            </article>
+
+            
+
+            
         </div>
-
-        {{ chart_data|json_script:"prediction-chart-data" }}
-
-        <!-- MENGULANG -->
-        <section class="prediction-section">
-            <div class="prediction-section-header">
-                <h2>1. Angka Mengulang</h2>
-                <p>
-                    Perkembangan angka mengulang berdasarkan data aktual dan
-                    hasil prediksi untuk jenjang SMA, MA, dan SMK.
-                </p>
-            </div>
-
-            <div class="prediction-chart-container">
-                <canvas id="chartMengulang"></canvas>
-            </div>
-
-            <div class="prediction-summary-grid">
-                <div class="prediction-summary-card">
-                    <h3>Rata-rata Periode 2024–{{ result.prediction_year }}</h3>
-                    <div class="prediction-average" id="averageMengulang">—</div>
-                    <p class="prediction-note">
-                        Rata-rata nilai indikator selama periode analisis,
-                        bukan nilai untuk satu tahun tertentu.
-                    </p>
-                </div>
-
-                <div class="prediction-summary-card">
-                    <h3>Interpretasi Tren</h3>
-                    <div class="prediction-trend" id="trendMengulang">—</div>
-                    <p class="prediction-note" id="trendDescriptionMengulang"></p>
-
-            <div class="prediction-ai-panel" id="ai-prediction-mengulang">
-                <div class="prediction-ai-heading">✦ ANALISIS AI</div>
-                <div class="prediction-ai-loading" hidden>AI sedang menganalisis hasil prediksi...</div>
-                <div class="prediction-ai-error" hidden></div>
-                <div class="prediction-ai-result" hidden></div>
-                <div class="prediction-ai-meta"></div>
-            </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- PUTUS SEKOLAH -->
-        <section class="prediction-section">
-            <div class="prediction-section-header">
-                <h2>2. Angka Putus Sekolah</h2>
-                <p>
-                    Perkembangan angka putus sekolah berdasarkan data aktual
-                    dan hasil prediksi untuk jenjang SMA, MA, dan SMK.
-                </p>
-            </div>
-
-            <div class="prediction-chart-container">
-                <canvas id="chartPutus"></canvas>
-            </div>
-
-            <div class="prediction-summary-grid">
-                <div class="prediction-summary-card">
-                    <h3>Rata-rata Periode 2024–{{ result.prediction_year }}</h3>
-                    <div class="prediction-average" id="averagePutus">—</div>
-                    <p class="prediction-note">
-                        Rata-rata nilai indikator selama periode analisis,
-                        bukan nilai untuk satu tahun tertentu.
-                    </p>
-                </div>
-
-                <div class="prediction-summary-card">
-                    <h3>Interpretasi Tren</h3>
-                    <div class="prediction-trend" id="trendPutus">—</div>
-                    <p class="prediction-note" id="trendDescriptionPutus"></p>
-
-            <div class="prediction-ai-panel" id="ai-prediction-putus">
-                <div class="prediction-ai-heading">✦ ANALISIS AI</div>
-                <div class="prediction-ai-loading" hidden>AI sedang menganalisis hasil prediksi...</div>
-                <div class="prediction-ai-error" hidden></div>
-                <div class="prediction-ai-result" hidden></div>
-                <div class="prediction-ai-meta"></div>
-            </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- LULUSAN -->
-        <section class="prediction-section">
-            <div class="prediction-section-header">
-                <h2>3. Angka Lulusan</h2>
-                <p>
-                    Perkembangan angka lulusan berdasarkan data aktual
-                    dan hasil prediksi untuk jenjang SMA, MA, dan SMK.
-                </p>
-            </div>
-
-            <div class="prediction-chart-container">
-                <canvas id="chartLulusan"></canvas>
-            </div>
-
-            <div class="prediction-summary-grid">
-                <div class="prediction-summary-card">
-                    <h3>Rata-rata Periode 2024–{{ result.prediction_year }}</h3>
-                    <div class="prediction-average" id="averageLulusan">—</div>
-                    <p class="prediction-note">
-                        Rata-rata nilai indikator selama periode analisis,
-                        bukan nilai untuk satu tahun tertentu.
-                    </p>
-                </div>
-
-                <div class="prediction-summary-card">
-                    <h3>Interpretasi Tren</h3>
-                    <div class="prediction-trend" id="trendLulusan">—</div>
-                    <p class="prediction-note" id="trendDescriptionLulusan"></p>
-
-            <div class="prediction-ai-panel" id="ai-prediction-lulusan">
-                <div class="prediction-ai-heading">✦ ANALISIS AI</div>
-                <div class="prediction-ai-loading" hidden>AI sedang menganalisis hasil prediksi...</div>
-                <div class="prediction-ai-error" hidden></div>
-                <div class="prediction-ai-result" hidden></div>
-                <div class="prediction-ai-meta"></div>
-            </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- PERBANDINGAN -->
-        <section class="prediction-comparison">
-            <div class="prediction-section-header">
-                <h2>Perbandingan Ketiga Indikator</h2>
-                <p>
-                    Perbandingan rata-rata nilai indikator Mengulang,
-                    Putus Sekolah, dan Lulusan berdasarkan jenjang.
-                </p>
-            </div>
-
-            <div class="prediction-comparison-chart">
-                <canvas id="chartComparison"></canvas>
-            </div>
-        </section>
-
+    </section>
     {% endif %}
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const dataElement = document.getElementById("prediction-chart-data");
-    if (!dataElement) return;
 
-    const data = JSON.parse(dataElement.textContent);
-    const labels = data.labels || [];
-    const selectedYear = Number("{{ result.prediction_year }}");
-
-    const colors = {
-        SMA: "#2563eb",
-        MA: "#0d9488",
-        SMK: "#f59e0b"
-    };
-
-    function formatPercent(value) {
-        if (value === null || value === undefined || !Number.isFinite(value)) {
-            return "—";
-        }
-
-        return new Intl.NumberFormat("id-ID", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 2
-        }).format(value) + "%";
-    }
-
-    function getPeriodValues(seriesList, yearLimit) {
-        const values = [];
-
-        seriesList.forEach(series => {
-            series.actual.forEach((value, index) => {
-                const year = Number(labels[index]);
-
-                if (
-                    value !== null &&
-                    value !== undefined &&
-                    Number.isFinite(value) &&
-                    year <= yearLimit
-                ) {
-                    values.push(value);
-                }
-            });
-
-            series.forecast.forEach((value, index) => {
-                const year = Number(labels[index]);
-
-                if (
-                    value !== null &&
-                    value !== undefined &&
-                    Number.isFinite(value) &&
-                    year <= yearLimit
-                ) {
-                    values.push(value);
-                }
-            });
-        });
-
-        return values;
-    }
-
-    function calculateAverage(seriesList, yearLimit) {
-        const values = getPeriodValues(seriesList, yearLimit);
-
-        if (!values.length) return null;
-
-        return values.reduce((sum, value) => sum + value, 0) / values.length;
-    }
-
-    function calculateTrend(seriesList, yearLimit) {
-        const startValues = [];
-        const endValues = [];
-
-        seriesList.forEach(series => {
-            labels.forEach((year, index) => {
-                const numericYear = Number(year);
-
-                if (numericYear === 2024) {
-                    if (series.actual[index] !== null) {
-                        startValues.push(series.actual[index]);
-                    }
-                }
-
-                if (numericYear === yearLimit) {
-                    const value =
-                        series.forecast[index] !== null
-                            ? series.forecast[index]
-                            : series.actual[index];
-
-                    if (value !== null && value !== undefined) {
-                        endValues.push(value);
-                    }
-                }
-            });
-        });
-
-        if (!startValues.length || !endValues.length) {
-            return {
-                label: "Belum dapat ditentukan",
-                description: "Data awal atau data akhir periode belum tersedia."
-            };
-        }
-
-        const startAverage =
-            startValues.reduce((a, b) => a + b, 0) / startValues.length;
-
-        const endAverage =
-            endValues.reduce((a, b) => a + b, 0) / endValues.length;
-
-        const difference = endAverage - startAverage;
-        const tolerance = 0.01;
-
-        if (difference > tolerance) {
-            return {
-                label: "Tren Meningkat",
-                description:
-                "Rata-rata indikator pada akhir periode lebih tinggi dibandingkan tahun 2024."
-            };
-        }
-
-        if (difference < -tolerance) {
-            return {
-                label: "Tren Menurun",
-            description:
-                "Rata-rata indikator pada akhir periode lebih rendah dibandingkan tahun 2024."
-            };
-        }
-
-        return {
-            label: "Relatif Stabil",
-            description:
-            "Perubahan rata-rata dari tahun 2024 hingga akhir periode relatif kecil."
-        };
-    }
-
-    function renderSummary(seriesList, averageId, trendId, descriptionId) {
-        const average = calculateAverage(seriesList, selectedYear);
-        const trend = calculateTrend(seriesList, selectedYear);
-
-        document.getElementById(averageId).textContent =
-            formatPercent(average);
-
-        document.getElementById(trendId).textContent = trend.label;
-        document.getElementById(descriptionId).textContent =
-            trend.description;
-    }
-
-    function createLineChart(canvasId, seriesList) {
-        const canvas = document.getElementById(canvasId);
-        if (!canvas) return;
-
-        const datasets = [];
-
-        seriesList.forEach(series => {
-            datasets.push({
-                label: series.label + " Aktual",
-                data: series.actual,
-                borderColor: series.color,
-                backgroundColor: series.color,
-                borderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 7,
-                pointStyle: "circle",
-                tension: 0.25,
-                spanGaps: false
-            });
-
-            datasets.push({
-                label: series.label + " Prediksi",
-                data: series.forecast,
-                borderColor: series.color,
-                backgroundColor: series.color,
-                borderWidth: 2,
-                borderDash: [6, 5],
-                pointRadius: 5,
-                pointHoverRadius: 8,
-                pointStyle: "triangle",
-                tension: 0.25,
-                spanGaps: false
-            });
-        });
-
-        new Chart(canvas, {
-            type: "line",
-            data: {
-                labels: labels,
-                datasets: datasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: "index",
-                    intersect: false
-                },
-                plugins: {
-                    legend: {
-                        position: "bottom"
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return context.dataset.label + ": " +
-                                    formatPercent(context.parsed.y);
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) {
-                                return value + "%";
-                            }
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: "Tahun"
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    function calculateYearlyAverage(seriesList, year) {
-        const values = [];
-
-        seriesList.forEach(series => {
-            labels.forEach((label, index) => {
-                if (Number(label) !== year) return;
-
-                const value =
-                    series.forecast[index] !== null
-                        ? series.forecast[index]
-                        : series.actual[index];
-
-                if (value !== null && value !== undefined && Number.isFinite(value)) {
-                    values.push(value);
-                }
-            });
-        });
-
-        if (!values.length) return null;
-
-        return values.reduce((sum, value) => sum + value, 0) / values.length;
-    }
-
-    const indicatorSeries = [
-        {
-            label: "Mengulang",
-            series: data.mengulang,
-            color: "#2563eb"
-        },
-        {
-            label: "Putus Sekolah",
-            series: data.putus_sekolah,
-            color: "#dc2626"
-        },
-        {
-            label: "Lulusan",
-            series: data.lulusan,
-            color: "#0d9488"
-        }
-    ];
-
-    createLineChart("chartMengulang", data.mengulang);
-    createLineChart("chartPutus", data.putus_sekolah);
-    createLineChart("chartLulusan", data.lulusan);
-
-    renderSummary(
-        data.mengulang,
-        "averageMengulang",
-        "trendMengulang",
-        "trendDescriptionMengulang"
-    );
-
-    renderSummary(
-        data.putus_sekolah,
-        "averagePutus",
-        "trendPutus",
-        "trendDescriptionPutus"
-    );
-
-    renderSummary(
-        data.lulusan,
-        "averageLulusan",
-        "trendLulusan",
-        "trendDescriptionLulusan"
-    );
-
-    const comparisonCanvas = document.getElementById("chartComparison");
-
-    if (comparisonCanvas) {
-        const comparisonDatasets = indicatorSeries.map(indicator => ({
-            label: indicator.label,
-            data: labels.map(year =>
-                calculateYearlyAverage(indicator.series, Number(year))
-            ),
-            borderColor: indicator.color,
-            backgroundColor: indicator.color,
-            borderWidth: 2,
-            pointRadius: 5,
-            pointHoverRadius: 8,
-            tension: 0.25
-        }));
-
-        new Chart(comparisonCanvas, {
-            type: "line",
-            data: {
-                labels: labels,
-                datasets: comparisonDatasets
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: "index",
-                    intersect: false
-                },
-                plugins: {
-                    legend: {
-                        position: "bottom"
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return context.dataset.label + ": " +
-                                    formatPercent(context.parsed.y);
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function (value) {
-                                return value + "%";
-                            }
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: "Tahun"
-                        }
-                    }
-                }
-            }
-        });
-    }
-});
-</script>
-
-<script src="{% static 'js/prediction_ai.js' %}?v=1"></script>
+<script src="{% static "js/province_prediction.js" %}"></script>
 {% endblock %}
